@@ -1,9 +1,9 @@
+
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, X } from 'lucide-react'
 
-import type {
-  LocationId,
-} from '../../data/locations'
+import type { LocationId } from '../../data/locations'
+import mascot from '../../assets/me.JPG'
 
 type DialoguePopupProps = {
   selectedId: LocationId
@@ -29,8 +29,9 @@ export default function DialoguePopup({
           exit={{ opacity: 0, y: 18 }}
           transition={{ duration: 0.24 }}
         >
+          {/* Your photo avatar */}
           <div className="mascot-avatar">
-            <span>JP</span>
+            <img src={mascot} alt="JP" />
             <i />
           </div>
 
@@ -41,6 +42,7 @@ export default function DialoguePopup({
               </strong>
 
               <button
+                type="button"
                 aria-label="Close dialogue"
                 onClick={onClose}
               >
@@ -50,7 +52,11 @@ export default function DialoguePopup({
 
             <p>{message}</p>
 
-            <button className="text-button" onClick={onClose}>
+            <button
+              type="button"
+              className="text-button"
+              onClick={onClose}
+            >
               Let's explore
               <ArrowRight size={15} />
             </button>
