@@ -1,0 +1,59 @@
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Package manager
+.npm/
+.pnpm-store/
+
+# TypeScript
+*.tsbuildinfo
+
+# Vite
+vite.config.*.timestamp-*
+vite.config.*.temp-*
+
+# Testing and coverage
+coverage/
+.nyc_output/
+
+# IDEs and editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# OS files
+desktop.ini
+
+# Local temporary files
+*.log
+*.tmp
+*.bak
+
+# Deployment
+.netlify/
+.vercel/
+
+# Optional local tooling
+.eslintcache
