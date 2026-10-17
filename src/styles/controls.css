@@ -1,0 +1,68 @@
+
+.camera-tools {
+  position: absolute;
+  top: 105px;
+  right: 24px;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.compass {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--green);
+  position: relative;
+  background: rgba(4, 15, 11, 0.5);
+}
+
+.compass span {
+  position: absolute;
+  top: -6px;
+  font-size: 8px;
+  color: #dce9e1;
+  background: #06110d;
+  padding: 0 4px;
+}
+
+.camera-tools > button {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(4, 15, 11, 0.76);
+  color: #b8c9c0;
+}
+
+.camera-tools > button:hover {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.zoom-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #7e9a8b;
+  font-size: 9px;
+  writing-mode: vertical-rl;
+}
+
+@media (max-width: 900px) {
+  .camera-tools {
+    right: 13px;
+    top: 86px;
+  }
+}
+
+@media (max-width: 560px) {
+  .zoom-hint {
+    display: none;
+  }
+}
