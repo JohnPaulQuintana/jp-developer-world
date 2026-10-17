@@ -11,6 +11,13 @@ type RidgeProps = {
   rotation?: [number, number, number]
 }
 
+type MossProps = {
+  position: [number, number, number]
+  scale: [number, number, number]
+  rotation?: [number, number, number]
+  color?: string
+}
+
 function Ridge({
   position,
   scale,
@@ -25,7 +32,7 @@ function Ridge({
       castShadow
       receiveShadow
     >
-      <icosahedronGeometry args={[1, 1]} />
+      <icosahedronGeometry args={[1, 2]} />
       <meshStandardMaterial
         color={color}
         roughness={1}
@@ -49,7 +56,8 @@ function MountainPeak({
       castShadow
       receiveShadow
     >
-      <coneGeometry args={[1, 2, 5, 2]} />
+      {/* Rounded, irregular rocky peak */}
+      <icosahedronGeometry args={[1, 2]} />
       <meshStandardMaterial
         color={color}
         roughness={1}
@@ -63,18 +71,20 @@ function Moss({
   position,
   scale,
   rotation = [0, 0, 0],
-}: {
-  position: [number, number, number]
-  scale: [number, number, number]
-  rotation?: [number, number, number]
-}) {
+  color = '#3d7543',
+}: MossProps) {
   return (
-    <mesh position={position} scale={scale} rotation={rotation}>
-      <sphereGeometry args={[1, 7, 5]} />
+    <mesh
+      position={position}
+      scale={scale}
+      rotation={rotation}
+      castShadow
+      receiveShadow
+    >
+      <sphereGeometry args={[1, 10, 7]} />
       <meshStandardMaterial
-        color="#315b35"
+        color={color}
         roughness={1}
-        flatShading
       />
     </mesh>
   )
@@ -86,100 +96,107 @@ export default function Mountain({
 }: MountainProps) {
   return (
     <group position={position} scale={scale}>
-      {/* Broad connected mountain base */}
+      {/* Narrow rocky base instead of a wide bread-shaped mound */}
       <Ridge
-        position={[0, 0.52, 0]}
-        scale={[2.5, 0.75, 1.15]}
+        position={[0, 0.22, 0]}
+        scale={[1.65, 0.38, 0.95]}
         color="#424c43"
-        rotation={[0, 0, -0.04]}
+        rotation={[0.02, 0.1, -0.04]}
       />
 
-      {/* Main mountain ridge */}
+      {/* Main mountain: raised, uneven and broad near the bottom */}
       <MountainPeak
-        position={[-0.95, 1.15, -0.12]}
-        scale={[1.05, 1.3, 0.9]}
-        color="#566052"
-        rotation={[0, 0, -0.16]}
-      />
-
-      <MountainPeak
-        position={[0.15, 1.45, -0.2]}
-        scale={[1.15, 1.75, 1.0]}
-        color="#3f4a40"
-        rotation={[0, 0, 0.1]}
-      />
-
-      <MountainPeak
-        position={[1.2, 0.98, -0.08]}
-        scale={[0.95, 1.15, 0.9]}
-        color="#626857"
-        rotation={[0, 0, 0.18]}
-      />
-
-      {/* Lower slopes blend the peaks into the base */}
-      <Ridge
-        position={[-1.25, 0.42, 0.36]}
-        scale={[1.15, 0.65, 0.7]}
-        color="#505a4c"
-        rotation={[0.05, 0.1, -0.12]}
-      />
-
-      <Ridge
-        position={[0.25, 0.4, 0.38]}
-        scale={[1.25, 0.62, 0.72]}
+        position={[0, 1.05, -0.12]}
+        scale={[0.88, 1.25, 0.72]}
         color="#465044"
-        rotation={[0, -0.12, 0.08]}
+        rotation={[0.03, 0.12, -0.08]}
+      />
+
+      {/* Secondary peak on the left */}
+      <MountainPeak
+        position={[-0.88, 0.76, -0.05]}
+        scale={[0.68, 0.87, 0.65]}
+        color="#566052"
+        rotation={[0.05, -0.2, -0.16]}
+      />
+
+      {/* Lower shoulder on the right */}
+      <MountainPeak
+        position={[0.88, 0.58, 0.02]}
+        scale={[0.65, 0.66, 0.62]}
+        color="#626857"
+        rotation={[0.02, 0.25, 0.12]}
+      />
+
+      {/* Angular rock faces break up the smooth silhouette */}
+      <Ridge
+        position={[-0.43, 0.82, 0.43]}
+        scale={[0.42, 0.62, 0.3]}
+        color="#62695e"
+        rotation={[0.08, 0.15, -0.28]}
       />
 
       <Ridge
-        position={[1.4, 0.36, 0.25]}
-        scale={[0.9, 0.52, 0.68]}
-        color="#51594a"
+        position={[0.34, 0.96, 0.39]}
+        scale={[0.38, 0.73, 0.28]}
+        color="#394438"
+        rotation={[0.08, -0.12, 0.2]}
+      />
+
+      <Ridge
+        position={[0.84, 0.47, 0.38]}
+        scale={[0.42, 0.3, 0.34]}
+        color="#73766a"
+        rotation={[0.1, 0.2, -0.15]}
+      />
+
+      <Ridge
+        position={[-0.96, 0.49, 0.37]}
+        scale={[0.35, 0.27, 0.3]}
+        color="#73766a"
+        rotation={[0.12, -0.1, 0.18]}
+      />
+
+      {/* Small patches of old moss on the slopes */}
+      <Moss
+        position={[-0.72, 0.7, 0.52]}
+        scale={[0.3, 0.07, 0.1]}
+        rotation={[0, 0.1, -0.28]}
+        color="#4c8249"
+      />
+
+      <Moss
+        position={[-0.34, 0.47, 0.69]}
+        scale={[0.42, 0.065, 0.12]}
+        rotation={[0, -0.1, -0.12]}
+      />
+
+      <Moss
+        position={[0.3, 0.57, 0.65]}
+        scale={[0.38, 0.065, 0.12]}
+        rotation={[0, 0.1, 0.12]}
+        color="#315b35"
+      />
+
+      <Moss
+        position={[0.77, 0.42, 0.55]}
+        scale={[0.32, 0.06, 0.1]}
         rotation={[0, 0.2, 0.1]}
       />
 
-      {/* Exposed stone faces */}
-      <Ridge
-        position={[-0.75, 0.88, 0.7]}
-        scale={[0.42, 0.58, 0.18]}
-        color="#73766a"
-        rotation={[0.1, 0.15, -0.35]}
-      />
-
-      <Ridge
-        position={[0.28, 1.05, 0.73]}
-        scale={[0.48, 0.72, 0.19]}
-        color="#62695e"
-        rotation={[0, -0.12, 0.25]}
-      />
-
-      <Ridge
-        position={[1.05, 0.72, 0.66]}
-        scale={[0.38, 0.48, 0.18]}
-        color="#747669"
-        rotation={[0.1, 0.2, -0.18]}
-      />
-
-      {/* Moss along the lower slopes */}
+      {/* A few higher moss patches that follow the rock faces */}
       <Moss
-        position={[-1.45, 0.65, 0.72]}
-        scale={[0.55, 0.12, 0.22]}
-        rotation={[0, 0.15, -0.1]}
+        position={[-0.48, 1.13, 0.36]}
+        scale={[0.22, 0.045, 0.09]}
+        rotation={[0, 0.1, -0.3]}
+        color="#4c8249"
       />
 
       <Moss
-        position={[-0.35, 0.48, 0.85]}
-        scale={[0.65, 0.13, 0.2]}
-      />
-
-      <Moss
-        position={[0.75, 0.44, 0.8]}
-        scale={[0.58, 0.12, 0.22]}
-      />
-
-      <Moss
-        position={[1.55, 0.48, 0.58]}
-        scale={[0.38, 0.1, 0.18]}
+        position={[0.2, 1.32, 0.3]}
+        scale={[0.25, 0.045, 0.09]}
+        rotation={[0, -0.1, 0.2]}
+        color="#3d7543"
       />
     </group>
   )

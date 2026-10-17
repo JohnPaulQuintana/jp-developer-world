@@ -1,18 +1,21 @@
-import { Map } from 'lucide-react'
+import { Compass } from 'lucide-react'
 
 export default function MapHeading() {
   return (
     <section className="map-heading">
       <span className="eyebrow">
-        <Map size={13} />
-        WORLD MAP / 01
+        <Compass size={13} />
+        THE ENCHANTED REALM / 01
       </span>
 
       <h1>
         Explore my <span>world.</span>
       </h1>
 
-      <p>Select a tile to discover more.</p>
+      <p>
+        Follow the forest paths and discover the work, skills, and stories
+        behind my journey as a developer.
+      </p>
     </section>
   )
 }
