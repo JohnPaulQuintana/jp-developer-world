@@ -22,6 +22,7 @@ export default function App() {
   const [dialogueOpen, setDialogueOpen] = useState(true);
   const [showDetails, setShowDetails] = useState(true);
 
+  console.log(dialogueOpen)
   const chooseLocation = (location: PortfolioLocation) => {
     setSelected(location);
     setShowDetails(true);
@@ -35,7 +36,8 @@ export default function App() {
   };
 
   const toggleDialogue = () => {
-    setDialogueOpen((open) => !open);
+    // setDialogueOpen((open) => !open);
+    setDialogueOpen(true)
   };
 
   return (
@@ -78,7 +80,8 @@ export default function App() {
       <DialoguePopup
         selectedId={selected.id as LocationId}
         message={storyMessages[selected.id]}
-        visible={dialogueOpen}
+        // visible={dialogueOpen}
+        visible={true}
         onClose={() => setDialogueOpen(false)}
       />
 

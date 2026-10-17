@@ -67,7 +67,7 @@ export default function DetailPopup({
             role="dialog"
             aria-modal="true"
             aria-labelledby="detail-popup-title"
-            className="relative flex h-[min(760px,90dvh)] w-full max-w-5xl flex-col overflow-hidden rounded-md border-2 border-green-500/40 bg-[#111711] text-white sm:rounded-3xl"
+            className="relative flex h-[min(760px,90dvh)] w-full max-w-5xl flex-col overflow-hidden rounded-md border-2 border-green-500/40 bg-[#111711]/20 text-white sm:rounded-3xl"
             initial={{ opacity: 0, scale: 0.9, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 16 }}
@@ -107,7 +107,7 @@ export default function DetailPopup({
             {/* Main content */}
             <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(200px,0.8fr)_minmax(0,1.2fr)] overflow-hidden sm:grid-cols-[0.9fr_1.1fr] sm:grid-rows-1">
               {/* Left: horizontal layout on mobile, vertical on desktop */}
-              <section className="relative flex min-h-0 flex-row overflow-hidden border-b border-white/10 bg-[#111711] sm:flex-col sm:border-b-0 sm:border-r sm:border-white/10">
+              <section className="relative flex min-h-0 flex-row overflow-hidden border-b border-white/10 bg-[#111711]/80 sm:flex-col sm:border-b-0 sm:border-r sm:border-white/10">
                 {/* Location information */}
                 <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center space-y-3 p-3 sm:flex-none sm:p-6">
                   <div className="inline-flex w-fit items-center gap-2 rounded-full border border-green-500/25 bg-green-500/10 px-2 py-1.5 text-[9px] font-bold tracking-wider text-green-400 sm:px-3 sm:text-xs">

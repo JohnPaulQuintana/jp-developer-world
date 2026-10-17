@@ -9,6 +9,7 @@ import MapTiles from './MapTiles'
 // import Mascot from './Mascot'
 import WorldLighting from './WorldLighting'
 import WorldControls from './WorldControls'
+import WindEffects from "./WindEffects";
 
 type WorldSceneProps = {
   selectedId: LocationId
@@ -44,6 +45,7 @@ export default function WorldScene({
         onSelect={onSelect}
       />
 
+      <WindEffects />
       {/* <Mascot onClick={onMascotClick} /> */}
 
       <WorldControls />

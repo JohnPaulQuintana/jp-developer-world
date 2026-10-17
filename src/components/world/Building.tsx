@@ -1,7 +1,7 @@
-// import { Html } from "@react-three/drei";
 import { Billboard, Text } from "@react-three/drei";
-import type { ThreeEvent } from "@react-three/fiber";
-import type { ReactNode } from "react";
+import { useFrame, type ThreeEvent } from "@react-three/fiber";
+import { MathUtils, type Group } from "three";
+import { useRef, type ReactNode } from "react";
 import type { PortfolioLocation } from "../../data/locations";
 
 type BuildingProps = {
@@ -183,40 +183,79 @@ function WoodenDoor({
   height,
   accent,
   glow,
+  active,
 }: {
   position: [number, number, number];
   width: number;
   height: number;
   accent: string;
   glow: number;
+  active: boolean;
 }) {
+  const doorRef = useRef<Group | null>(null);
+
+  useFrame((_, delta) => {
+    if (!doorRef.current) return;
+
+    doorRef.current.rotation.y = MathUtils.damp(
+      doorRef.current.rotation.y,
+      active ? -Math.PI / 2 : 0,
+      5,
+      delta,
+    );
+  });
+
   return (
     <group position={position}>
-      <mesh position={[0, height / 2, 0]} castShadow>
-        <boxGeometry args={[width, height, 0.035]} />
-        <meshStandardMaterial color="#18231a" roughness={1} />
-      </mesh>
-
-      <mesh position={[0, height * 0.53, 0.022]}>
-        <boxGeometry args={[width * 0.72, height * 0.72, 0.009]} />
+      {/* Entrance interior */}
+      <mesh position={[0, height / 2, -0.012]}>
+        <boxGeometry args={[width + 0.025, height + 0.015, 0.025]} />
         <meshStandardMaterial
-          color={accent}
-          emissive={accent}
-          emissiveIntensity={glow}
-          toneMapped={false}
+          color="#07150d"
+          emissive="#347344"
+          emissiveIntensity={active ? 1.4 : 0}
+          roughness={1}
         />
       </mesh>
 
-      <mesh position={[width * 0.3, height * 0.45, 0.03]}>
-        <sphereGeometry args={[0.018, 6, 5]} />
-        <meshStandardMaterial
-          color="#e3c68b"
-          metalness={0.4}
-          roughness={0.45}
-        />
-      </mesh>
+      {/* Hinged door */}
+      <group ref={doorRef} position={[-width / 2, 0, 0]}>
+        <mesh
+          position={[width / 2, height / 2, 0]}
+          castShadow
+        >
+          <boxGeometry args={[width, height, 0.035]} />
+          <meshStandardMaterial
+            color={active ? "#315b32" : "#18231a"}
+            roughness={0.9}
+          />
+        </mesh>
 
-      <mesh position={[0, height + 0.025, 0]}>
+        {/* Raised panel */}
+        <mesh position={[width / 2, height * 0.53, 0.021]}>
+          <boxGeometry args={[width * 0.72, height * 0.72, 0.009]} />
+          <meshStandardMaterial
+            color={active ? "#347344" : "#193625"}
+            emissive={accent}
+            emissiveIntensity={active ? glow * 0.3 : 0}
+            roughness={0.8}
+            toneMapped={false}
+          />
+        </mesh>
+
+        {/* Door handle */}
+        <mesh position={[width * 0.8, height * 0.45, 0.032]}>
+          <sphereGeometry args={[0.018, 8, 6]} />
+          <meshStandardMaterial
+            color="#b99a5a"
+            metalness={0.3}
+            roughness={0.5}
+          />
+        </mesh>
+      </group>
+
+      {/* Fixed wooden lintel */}
+      <mesh position={[0, height + 0.025, 0]} castShadow>
         <boxGeometry args={[width + 0.13, 0.055, 0.065]} />
         <meshStandardMaterial color={woodLight} roughness={1} />
       </mesh>
@@ -1115,6 +1154,7 @@ function BuildingArchitecture({
   return structure;
 }
 
+
 export default function Building({
   location,
   active,
@@ -1133,6 +1173,51 @@ export default function Building({
   const roofBaseY = baseHeight + wallHeight;
   const frontZ = depth / 2;
 
+  const markerRef = useRef<Group | null>(null);
+  const selectionRingRef = useRef<Group | null>(null);
+
+  useFrame(({ clock }, delta) => {
+    // Floating marker animation.
+    if (markerRef.current) {
+      const bob =
+        active ? Math.sin(clock.elapsedTime * 2.5) * 0.035 : 0;
+
+      markerRef.current.position.y = MathUtils.damp(
+        markerRef.current.position.y,
+        roofBaseY + 0.43 * size + bob,
+        6,
+        delta,
+      );
+
+      const targetScale = active ? 1.35 : 1;
+
+      const nextScale = MathUtils.damp(
+        markerRef.current.scale.x,
+        targetScale,
+        6,
+        delta,
+      );
+
+      markerRef.current.scale.setScalar(nextScale);
+    }
+
+    // Subtle pulse around the selected building.
+    if (selectionRingRef.current) {
+      const pulse = active
+        ? 1 + Math.sin(clock.elapsedTime * 3) * 0.035
+        : 1;
+
+      const nextScale = MathUtils.damp(
+        selectionRingRef.current.scale.x,
+        pulse,
+        7,
+        delta,
+      );
+
+      selectionRingRef.current.scale.setScalar(nextScale);
+    }
+  });
+
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
     event.stopPropagation();
     onSelect();
@@ -1148,20 +1233,58 @@ export default function Building({
         <boxGeometry
           args={[width + 0.32 * size, baseHeight, depth + 0.28 * size]}
         />
-        <meshStandardMaterial color="#263b2c" roughness={1} />
+        <meshStandardMaterial
+          color={active ? "#31543a" : "#263b2c"}
+          roughness={1}
+        />
       </mesh>
 
       <mesh position={[0, baseHeight + 0.005, 0]} receiveShadow>
         <boxGeometry
           args={[width + 0.34 * size, 0.035 * size, depth + 0.3 * size]}
         />
-        <meshStandardMaterial color="#285b32" roughness={1} />
+        <meshStandardMaterial
+          color={active ? "#3b8248" : "#285b32"}
+          roughness={1}
+        />
       </mesh>
+
+      {/* Selection ring: visible only on the active building */}
+      <group
+        ref={selectionRingRef}
+        position={[0, baseHeight + 0.028 * size, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+      >
+        <mesh visible={active}>
+          <torusGeometry args={[0.68 * size, 0.012 * size, 8, 48]} />
+          <meshBasicMaterial
+            color="#4a9b58"
+            transparent
+            opacity={0.95}
+            depthWrite={false}
+          />
+        </mesh>
+
+        <mesh visible={active} position={[0, 0, 0.002]}>
+          <torusGeometry args={[0.59 * size, 0.004 * size, 6, 48]} />
+          <meshBasicMaterial
+            color="#a1e9a8"
+            transparent
+            opacity={0.75}
+            depthWrite={false}
+          />
+        </mesh>
+      </group>
 
       {/* Main timber cottage body */}
       <mesh position={[0, wallCenterY, 0]} castShadow receiveShadow>
         <boxGeometry args={[width, wallHeight, depth]} />
-        <meshStandardMaterial color={theme.wall} roughness={0.96} />
+        <meshStandardMaterial
+          color={theme.wall}
+          roughness={0.96}
+          emissive={active ? "#183c21" : "#000000"}
+          emissiveIntensity={active ? 0.45 : 0}
+        />
       </mesh>
 
       {/* Horizontal exposed timber courses */}
@@ -1185,13 +1308,14 @@ export default function Building({
         <meshStandardMaterial color={woodLight} roughness={1} />
       </mesh>
 
-      {/* Entrance */}
+      {/* Animated entrance */}
       <WoodenDoor
         position={[0, baseHeight + 0.01 * size, frontZ + 0.025]}
         width={0.2 * size}
         height={wallHeight * 0.7}
         accent={accent}
         glow={glow}
+        active={active}
       />
 
       {/* Architecture and landmarks unique to this location */}
@@ -1209,20 +1333,34 @@ export default function Building({
       {/* Shared woodland ground details */}
       <ForestDetails size={size} width={width} depth={depth} glow={glow} />
 
-      {/* Active marker */}
-      <mesh position={[0, roofBaseY + 0.43 * size, 0]}>
-        <octahedronGeometry args={[active ? 0.065 : 0.04]} />
-        <meshStandardMaterial
-          color={accent}
-          emissive={accent}
-          emissiveIntensity={glow}
-          toneMapped={false}
-        />
-      </mesh>
+      {/* Animated floating emerald marker */}
+      <group
+        ref={markerRef}
+        position={[0, roofBaseY + 0.43 * size, 0]}
+      >
+        <mesh>
+          <octahedronGeometry args={[active ? 0.065 : 0.04]} />
+          <meshStandardMaterial
+            color={active ? "#a1f5ae" : "#4d9a5d"}
+            emissive={active ? "#268a43" : accent}
+            emissiveIntensity={active ? 2.2 : 0.45}
+            toneMapped={false}
+          />
+        </mesh>
 
-      {/* Enchanted forest navigation nameplate */}
+        {active && (
+          <pointLight
+            color="#79e991"
+            intensity={0.65}
+            distance={1.2}
+            decay={2}
+          />
+        )}
+      </group>
+
+      {/* Forest navigation nameplate */}
       <Billboard position={[0, roofBaseY + 0.78 * size, 0]} follow>
-        {/* Soft shadow behind the plaque */}
+        {/* Soft shadow */}
         <mesh position={[0.018, -0.018, -0.045]} renderOrder={998}>
           <planeGeometry args={[1.12, 0.31]} />
           <meshBasicMaterial
@@ -1234,17 +1372,17 @@ export default function Building({
           />
         </mesh>
 
-        {/* Warm wooden outer trim */}
+        {/* Outer wooden trim */}
         <mesh position={[0, 0, -0.035]} renderOrder={999}>
           <planeGeometry args={[1.12, 0.31]} />
           <meshBasicMaterial
-            color={active ? "#b99a5a" : "#65583a"}
+            color={active ? "#4a8750" : "#514532"}
             depthTest={false}
             depthWrite={false}
           />
         </mesh>
 
-        {/* Main moss-green plaque */}
+        {/* Main plaque */}
         <mesh position={[0, 0, -0.025]} renderOrder={1000}>
           <planeGeometry args={[1.085, 0.275]} />
           <meshBasicMaterial
@@ -1254,7 +1392,7 @@ export default function Building({
           />
         </mesh>
 
-        {/* Inner forest-green surface */}
+        {/* Inner green surface */}
         <mesh position={[0, 0, -0.015]} renderOrder={1001}>
           <planeGeometry args={[1.045, 0.235]} />
           <meshBasicMaterial
@@ -1264,21 +1402,21 @@ export default function Building({
           />
         </mesh>
 
-        {/* Small glowing emerald marker */}
+        {/* Emerald status marker */}
         <mesh position={[-0.405, 0, 0.005]} renderOrder={1002}>
-          <circleGeometry args={[0.027, 16]} />
+          <circleGeometry args={[active ? 0.034 : 0.027, 16]} />
           <meshBasicMaterial
-            color={active ? "#7dff9b" : "#4d9a5d"}
+            color={active ? "#a1f5ae" : "#4d9a5d"}
             depthTest={false}
             depthWrite={false}
           />
         </mesh>
 
-        {/* Tiny gold accent beside the marker */}
+        {/* Small green divider */}
         <mesh position={[-0.355, 0, 0.005]} renderOrder={1002}>
           <planeGeometry args={[0.012, 0.105]} />
           <meshBasicMaterial
-            color="#b99a5a"
+            color={active ? "#a1e9a8" : "#426b38"}
             depthTest={false}
             depthWrite={false}
           />
@@ -1288,11 +1426,11 @@ export default function Building({
         <Text
           position={[0.045, 0, 0.012]}
           fontSize={0.105}
-          maxWidth={0.75}
+          maxWidth={0.78}
           textAlign="center"
           anchorX="center"
           anchorY="middle"
-          color={active ? "#f4e6bd" : "#e3e8d8"}
+          color={active ? "#f5e7bf" : "#e3e8d8"}
           outlineWidth={0.0015}
           outlineColor="#102016"
           renderOrder={1003}
