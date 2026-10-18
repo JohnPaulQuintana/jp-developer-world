@@ -67,7 +67,7 @@ export default function DetailPopup({
             role="dialog"
             aria-modal="true"
             aria-labelledby="detail-popup-title"
-            className="relative flex h-[min(760px,90dvh)] w-full max-w-5xl flex-col overflow-hidden rounded-md border-2 border-green-500/40 bg-[#111711]/70 text-white sm:rounded-3xl"
+            className="relative flex h-[min(760px,90dvh)] w-full max-w-5xl flex-col overflow-hidden rounded-md border-2 border-gray-500/40 bg-[#111711]/70 text-white sm:rounded-3xl"
             // className="relative flex h-[min(760px,90dvh)] w-full max-w-5xl flex-col overflow-hidden rounded-md border-2 border-green-500/40 bg-[#111711]/20 text-white sm:rounded-3xl"
             initial={{ opacity: 0, scale: 0.9, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
