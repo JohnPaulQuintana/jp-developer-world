@@ -208,21 +208,89 @@
 
 @media (max-width: 520px) {
   .detail-overlay {
-    padding: 16px;
+    padding: 12px;
+    align-items: center;
   }
 
   .detail-card-centered {
-    max-height: calc(100dvh - 32px);
-    padding: 28px 22px 20px;
+    width: 100%;
+    max-height: calc(100dvh - 24px);
+    box-sizing: border-box;
+    padding: 30px 20px 22px;
     border-radius: 20px;
   }
 
+  .detail-card-centered .close-card {
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .announcement-tag {
+    gap: 8px;
+    margin: 8px 0 18px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+
   .detail-mascot {
-    width: 88px;
-    height: 88px;
+    width: 96px;
+    height: 96px;
+    margin-bottom: 18px;
+  }
+
+  .detail-icon-centered {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 18px;
+  }
+
+  .detail-card-centered .eyebrow {
+    margin-bottom: 10px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+
+  .detail-card-centered h2 {
+    margin-bottom: 14px;
+    font-size: clamp(27px, 7vw, 34px);
+    line-height: 1.2;
+    letter-spacing: -0.6px;
+  }
+
+  .detail-card-centered .detail-lead {
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.65;
   }
 
   .detail-card-centered .detail-copy {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .detail-card-centered .announcement-button {
+    min-height: 52px;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .detail-card-centered .card-index {
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 16px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .detail-card-centered .card-index strong {
+    gap: 7px;
+    font-size: 14px;
+  }
+
+  .detail-card-centered .card-index i {
+    width: 16px;
   }
 }
