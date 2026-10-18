@@ -141,7 +141,6 @@
   }
 }
 
-/* Mobile */
 @media (max-width: 560px) {
   .dialogue-card {
     left: 0;
@@ -149,21 +148,21 @@
     bottom: 0;
     width: auto;
     max-width: none;
-    padding: 10px;
+    padding: 14px;
     gap: 12px;
     flex-direction: column;
     align-items: stretch;
-    border-radius: 6px 6px 0 0;
+    border-radius: 10px 10px 0 0;
   }
 
   .dialogue-main {
     width: 100%;
-    gap: 9px;
+    gap: 12px;
   }
 
   .mascot-avatar {
-    width: 42px;
-    height: 49px;
+    width: 48px;
+    height: 56px;
   }
 
   .dialogue-content {
@@ -171,19 +170,35 @@
     min-width: 0;
   }
 
-  .dialogue-content p {
-    margin: 6px 0;
-    font-size: 10px;
-    line-height: 1.5;
+  .dialogue-top strong {
+    font-size: 15px;
   }
 
-  /* Show the sidebar inside the dialogue */
+  .dialogue-top strong span {
+    font-size: 10px;
+  }
+
+  .dialogue-top button {
+    padding: 5px;
+  }
+
+  .dialogue-content p {
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .text-button {
+    gap: 7px;
+    font-size: 13px;
+  }
+
   .dialogue-mobile-nav {
     display: block;
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
-    padding-top: 9px;
+    padding-top: 10px;
     overflow: hidden;
     border-top: 1px solid rgba(109, 165, 135, 0.2);
   }
@@ -213,6 +228,9 @@
     flex: 0 0 auto;
     width: auto;
     min-width: max-content;
+    padding: 11px 12px;
+    gap: 8px;
+    font-size: 13px;
     white-space: nowrap;
   }
 }
