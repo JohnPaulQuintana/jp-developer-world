@@ -87,17 +87,22 @@ export const locations: PortfolioLocation[] = [
   },
 ]
 
-export const storyMessages: Record<string, string> = {
+export const storyMessages: Record<LocationId, string> = {
   home:
-    "Hey, I'm JP. Welcome to my developer world! Explore the projects, technologies, and ideas behind my work.",
+    "Welcome to my world! I'm JP, a software engineer who enjoys turning ideas into working software. Explore the map to discover my projects, skills, and journey.",
+
   projects:
-    'Welcome to the Project Lab. Explore my work in navigation, business tools, risk management, backend systems, and automation.',
+    "You've discovered the Project Lab! This is where I turn ideas into applications, from indoor navigation and business tools to risk management systems and automation. Pick a project to see what I've been building.",
+
   about:
-    'Meet the developer behind the projects: a software engineer focused on building practical applications and learning how systems work.',
+    "Curious about the developer behind the code? I'm JP. I enjoy solving problems, understanding how systems work, and continuously improving the way I build software.",
+
   skills:
-    'Explore the technologies I use across backend development, databases, frontend applications, automation, and AI experimentation.',
+    "Welcome to the Skills Reactor! My toolkit includes Python, FastAPI, PostgreSQL, React, TypeScript, and more. I'm especially interested in backend engineering, automation, and AI-powered applications.",
+
   experience:
-    'Follow my journey from analytical and automation work toward building and engineering software systems.',
+    "Every project is another step forward. My journey has taken me through analytical work, automation, and software development. I'm continuing to strengthen my engineering skills by building real-world systems.",
+
   contact:
-    "You've reached the Contact Beacon. Let's talk about your project, an opportunity, or an idea worth building.",
+    "You've reached the Contact Beacon! Have a project, an opportunity, or an idea you'd like to bring to life? Let's connect and see what we can build together.",
 }

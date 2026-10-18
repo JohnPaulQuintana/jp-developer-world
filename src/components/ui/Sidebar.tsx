@@ -36,9 +36,9 @@ export default function Sidebar({
 }: SidebarProps) {
   return (
     <nav
-      className="side-nav flex h-screen min-h-0 flex-col"
-      aria-label="Portfolio locations"
-    >
+  className="side-nav hidden h-screen min-h-0 flex-col md:flex"
+  aria-label="Portfolio locations"
+>
       <div className="flex-1 space-y-2 overflow-y-auto">
         {locations.map((location) => {
           const NavIcon = iconMap[location.id]

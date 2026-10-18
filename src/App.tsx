@@ -83,6 +83,8 @@ export default function App() {
         // visible={dialogueOpen}
         visible={true}
         onClose={() => setDialogueOpen(false)}
+        locations={locations}
+        onSelect={chooseLocation}
       />
 
       {/* Bottom controls and status */}

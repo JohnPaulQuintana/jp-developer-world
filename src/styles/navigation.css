@@ -139,10 +139,14 @@
 }
 
 @media (max-width: 560px) {
+  .side-nav {
+    display: none !important;
+  }
+
   .map-heading {
     top: 84px;
-    left: 80px;
-    max-width: calc(100vw - 80px);
+    left: 12px;
+    max-width: calc(100vw - 24px);
   }
 
   .map-heading h1 {
@@ -155,6 +159,7 @@
     font-size: 10px;
     line-height: 1.5;
   }
+
   .map-heading .eyebrow {
     gap: 5px;
     font-size: 8px;
