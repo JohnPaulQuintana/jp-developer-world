@@ -8,6 +8,7 @@ import DialoguePopup from "./components/ui/DialoguePopup";
 import Footer from "./components/ui/Footer";
 import MapHeading from "./components/ui/MapHeading";
 import CameraTools from "./components/ui/CameraTools";
+import FantasyLoader from "./components/ui/FantasyLoader";
 
 import {
   locations,
@@ -17,12 +18,13 @@ import {
 } from "./data/locations";
 
 export default function App() {
-  const [selected, setSelected] = useState<PortfolioLocation>(locations[0]);
+  const [selected, setSelected] =
+    useState<PortfolioLocation>(locations[0]);
 
   const [dialogueOpen, setDialogueOpen] = useState(true);
   const [showDetails, setShowDetails] = useState(true);
+  const [isWorldLoading, setIsWorldLoading] = useState(true);
 
-  console.log(dialogueOpen)
   const chooseLocation = (location: PortfolioLocation) => {
     setSelected(location);
     setShowDetails(true);
@@ -36,8 +38,7 @@ export default function App() {
   };
 
   const toggleDialogue = () => {
-    // setDialogueOpen((open) => !open);
-    setDialogueOpen(true)
+    setDialogueOpen(true);
   };
 
   return (
@@ -50,6 +51,7 @@ export default function App() {
           selectedId={selected.id as LocationId}
           onSelect={chooseLocation}
           onMascotClick={toggleDialogue}
+          onReady={() => setIsWorldLoading(false)}
         />
       </div>
 
@@ -64,14 +66,13 @@ export default function App() {
 
       {/* Map interface */}
       <MapHeading />
-
       <CameraTools onReset={resetStory} />
 
       {/* Selected location details */}
       <DetailPopup
         location={selected}
         locations={locations}
-        visible={showDetails}
+        visible={showDetails && !isWorldLoading}
         onClose={() => setShowDetails(false)}
         onAskJP={() => setDialogueOpen(true)}
       />
@@ -80,8 +81,7 @@ export default function App() {
       <DialoguePopup
         selectedId={selected.id as LocationId}
         message={storyMessages[selected.id]}
-        // visible={dialogueOpen}
-        visible={true}
+        visible={dialogueOpen && !isWorldLoading}
         onClose={() => setDialogueOpen(false)}
         locations={locations}
         onSelect={chooseLocation}
@@ -89,6 +89,11 @@ export default function App() {
 
       {/* Bottom controls and status */}
       <Footer location={selected} />
+
+      {/* Fantasy loading screen */}
+      {isWorldLoading && (
+        <FantasyLoader label="Summoning the world" />
+      )}
     </main>
   );
 }

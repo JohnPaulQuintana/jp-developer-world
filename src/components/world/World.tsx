@@ -1,3 +1,4 @@
+
 import type {
   PortfolioLocation,
   LocationId,
@@ -8,6 +9,7 @@ export type WorldProps = {
   selectedId: LocationId
   onSelect: (location: PortfolioLocation) => void
   onMascotClick: () => void
+  onReady: () => void
 }
 
 export default function World(props: WorldProps) {
