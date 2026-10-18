@@ -118,10 +118,10 @@ export default function DialoguePopup({
     })}
   </div>
 
-  <div className="mt-1 flex items-center gap-2 px-1 py-1 text-[9px] font-bold tracking-[0.16em] text-white/40">
+  {/* <div className="mt-1 flex items-center gap-2 px-1 py-1 text-[9px] font-bold tracking-[0.16em] text-white/40">
     <span className="size-1.5 rounded-full bg-green-500" />
     MAP ONLINE
-  </div>
+  </div> */}
 </nav>
         </motion.section>
       )}
