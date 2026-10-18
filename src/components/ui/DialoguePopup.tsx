@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-  ArrowRight,
+  // ArrowRight,
   BriefcaseBusiness,
   Code2,
   House,
