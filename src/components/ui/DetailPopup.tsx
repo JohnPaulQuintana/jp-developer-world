@@ -105,11 +105,11 @@ export default function DetailPopup({
             </header>
 
             {/* Main content */}
-            <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(200px,0.8fr)_minmax(0,1.2fr)] overflow-hidden sm:grid-cols-[0.9fr_1.1fr] sm:grid-rows-1">
+            <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[150px_minmax(0,1fr)] overflow-hidden sm:grid-cols-[0.9fr_1.1fr] sm:grid-rows-1">
               {/* Left: horizontal layout on mobile, vertical on desktop */}
               <section className="relative flex min-h-0 flex-row overflow-hidden border-b border-white/10 bg-[#111711]/80 sm:flex-col sm:border-b-0 sm:border-r sm:border-white/10">
                 {/* Location information */}
-                <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center space-y-3 p-3 sm:flex-none sm:p-6">
+                <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center space-y-2 p-2 sm:space-y-3 sm:p-6">
                   <div className="inline-flex w-fit items-center gap-2 rounded-full border border-green-500/25 bg-green-500/10 px-2 py-1.5 text-[9px] font-bold tracking-wider text-green-400 sm:px-3 sm:text-xs">
                     <span className="size-1.5 shrink-0 rounded-full bg-green-500" />
                     LOCATION {String(index).padStart(2, "0")}
@@ -128,7 +128,7 @@ export default function DetailPopup({
                         {location.title}
                       </h1>
 
-                      <p className="mt-2 break-words text-[11px] leading-4 text-white/60 sm:text-sm sm:leading-6">
+                      <p className="mt-1 break-words text-[10px] leading-3.5 text-white/60 sm:mt-2 sm:text-sm sm:leading-6">
                         {location.description}
                       </p>
                     </div>
@@ -136,13 +136,13 @@ export default function DetailPopup({
                 </div>
 
                 {/* Mascot: right side on mobile, bottom on desktop */}
-                <div className="flex w-[35%] min-w-0 shrink-0 items-end justify-center overflow-hidden sm:w-full sm:min-h-0 sm:flex-1">
+                <div className="flex w-[30%] min-w-0 shrink-0 items-end justify-center overflow-hidden sm:w-full sm:min-h-0 sm:flex-1">
                   <motion.img
                     key={location.id}
                     src={mascot}
                     alt="JP mascot"
                     draggable={false}
-                    className="block h-auto max-h-full w-full max-w-[150px] object-contain object-bottom sm:max-w-[240px]"
+                    className="block h-full max-h-full w-full max-w-[120px] object-contain object-bottom sm:h-auto sm:max-w-[240px]"
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
