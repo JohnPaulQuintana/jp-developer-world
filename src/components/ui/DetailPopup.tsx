@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -17,6 +18,9 @@ import {
 
 import mascot from "../../assets/hello.png";
 import type { LocationId, PortfolioLocation } from "../../data/locations";
+
+import SkillsSection from "./SkillsSection";
+import ProjectsSection from "./ProjectsSection";
 
 const iconMap = {
   home: House,
@@ -51,7 +55,9 @@ export default function DetailPopup({
 }: DetailPopupProps) {
   const Icon = iconMap[location.id];
 
-  const locationIndex = locations.findIndex((item) => item.id === location.id);
+  const locationIndex = locations.findIndex(
+    (item) => item.id === location.id,
+  );
 
   const index = locationIndex >= 0 ? locationIndex + 1 : 1;
   const totalLocations = locations.length;
@@ -61,12 +67,28 @@ export default function DetailPopup({
       ? (Math.min(index, totalLocations) / totalLocations) * 100
       : 0;
 
+  useEffect(() => {
+    if (!visible) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [visible, onClose]);
+
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          key={location.id}
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#020805]/90 p-2 backdrop-blur-xl sm:p-5"
+          key="detail-drawer-overlay"
+          className="fixed inset-0 z-50 bg-black/45 backdrop-blur-[2px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -74,34 +96,35 @@ export default function DetailPopup({
           onClick={onClose}
         >
           <motion.aside
+            key={location.id}
             role="dialog"
             aria-modal="true"
             aria-labelledby="detail-popup-title"
-            className="relative flex h-[94dvh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-emerald-400/25 bg-[#04110d] text-white shadow-[0_0_100px_rgba(0,255,130,0.08)] sm:h-[min(900px,92dvh)] sm:rounded-3xl"
-            initial={{ opacity: 0, scale: 0.96, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            className="relative ml-auto flex h-[100dvh] w-full max-w-[680px] flex-col overflow-hidden border-l border-emerald-400/20 bg-[#04110d] text-white shadow-[-24px_0_80px_rgba(0,0,0,0.35)]"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
             transition={{
               type: "spring",
-              stiffness: 240,
-              damping: 26,
+              stiffness: 280,
+              damping: 30,
+              mass: 0.85,
             }}
             onClick={(event) => event.stopPropagation()}
           >
-            {/* Ambient background */}
+            {/* Drawer background */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 overflow-hidden"
             >
-              <div className="absolute -right-32 -top-32 size-96 rounded-full bg-emerald-500/[0.09] blur-[100px]" />
-              <div className="absolute -bottom-40 -left-24 size-80 rounded-full bg-green-500/[0.06] blur-[100px]" />
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.025)_1px,transparent_1px)] bg-[size:32px_32px]" />
+              <div className="absolute -right-32 -top-24 size-80 rounded-full bg-emerald-500/[0.07] blur-[100px]" />
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.015)_1px,transparent_1px)] bg-[size:32px_32px]" />
             </div>
 
             {/* Header */}
-            <header className="relative z-20 flex shrink-0 items-center gap-3 border-b border-emerald-300/15 bg-[#07140f]/95 px-4 py-3.5 sm:px-7 sm:py-5">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-400 shadow-[inset_0_0_20px_rgba(16,185,129,0.06)] sm:size-14">
-                <Sparkles size={25} />
+            <header className="relative z-20 flex shrink-0 items-center gap-3 border-b border-emerald-300/15 bg-[#07140f]/95 px-4 py-3.5 sm:px-6 sm:py-5">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-400 sm:size-12">
+                <Sparkles size={23} />
               </div>
 
               <div className="min-w-0 flex-1">
@@ -109,7 +132,7 @@ export default function DetailPopup({
                   JP's Developer Portfolio
                 </p>
 
-                <h2 className="mt-1 truncate text-sm font-black tracking-wide text-white sm:text-lg">
+                <h2 className="mt-1 truncate text-sm font-black tracking-wide text-white sm:text-base">
                   {location.shortTitle.toUpperCase()}
                 </h2>
               </div>
@@ -118,18 +141,17 @@ export default function DetailPopup({
                 type="button"
                 aria-label="Close details"
                 onClick={onClose}
-                className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/60 transition hover:border-emerald-400/40 hover:bg-emerald-400/10 hover:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 sm:size-12"
+                className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/60 transition hover:border-emerald-400/40 hover:bg-emerald-400/10 hover:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
               >
-                <X size={22} />
+                <X size={21} />
               </button>
             </header>
 
             {/* Scrollable content */}
             <main className="relative z-10 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
-              <div className="space-y-4 p-3 sm:space-y-6 sm:p-6 lg:p-8">
+              <div className="space-y-4 p-3 sm:space-y-5 sm:p-5 lg:p-6">
                 {/* Hero */}
                 <section className="relative isolate overflow-hidden rounded-2xl border border-emerald-300/20 bg-[#061810]/90 sm:rounded-3xl">
-
                   <div
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -141,26 +163,26 @@ export default function DetailPopup({
 
                   <div className="relative grid grid-cols-1 sm:grid-cols-[1fr_0.85fr]">
                     {/* Hero copy */}
-                    <div className="relative z-10 flex min-w-0 flex-col justify-center p-5 pb-1 sm:p-7 sm:pb-7 lg:p-9">
+                    <div className="relative z-10 flex min-w-0 flex-col justify-center p-5 pb-1 sm:p-6 sm:pb-7 lg:p-7">
                       <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-400/35 bg-emerald-400/[0.08] px-3 py-2 text-[10px] font-extrabold tracking-[0.14em] text-emerald-300 sm:text-xs">
                         <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
                         LOCATION {String(index).padStart(2, "0")}
                       </div>
 
                       <div className="mt-5 flex items-start gap-3">
-                        <div className="mt-1 flex size-11 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-400 sm:size-14">
-                          <Icon size={27} />
+                        <div className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-400 sm:size-12">
+                          <Icon size={24} />
                         </div>
 
                         <div className="min-w-0">
                           <h1
                             id="detail-popup-title"
-                            className="break-words text-2xl font-black leading-tight tracking-tight sm:text-3xl lg:text-4xl"
+                            className="break-words text-2xl font-black leading-tight tracking-tight sm:text-3xl"
                           >
                             {location.title}
                           </h1>
 
-                          <p className="mt-2 text-sm font-medium leading-6 text-emerald-50/60 sm:text-base">
+                          <p className="mt-2 text-sm font-medium leading-6 text-emerald-50/60">
                             {location.description}
                           </p>
                         </div>
@@ -175,10 +197,10 @@ export default function DetailPopup({
                     </div>
 
                     {/* Mascot */}
-                    <div className="relative -mt-1 flex h-44 items-end justify-center overflow-hidden sm:mt-0 sm:h-72 lg:h-80">
+                    <div className="relative -mt-1 flex h-44 items-end justify-center overflow-hidden sm:mt-0 sm:h-64 lg:h-72">
                       <div
                         aria-hidden="true"
-                        className="absolute bottom-0 left-1/2 h-32 w-48 -translate-x-1/2 rounded-full bg-emerald-400/15 blur-[55px] sm:h-48 sm:w-64"
+                        className="absolute bottom-0 left-1/2 h-32 w-48 -translate-x-1/2 rounded-full bg-emerald-400/15 blur-[55px] sm:h-48 sm:w-56"
                       />
 
                       <motion.img
@@ -186,7 +208,7 @@ export default function DetailPopup({
                         src={mascot}
                         alt="JP mascot"
                         draggable={false}
-                        className="relative -mb-10 z-10 h-full max-w-full object-contain object-bottom drop-shadow-[0_12px_25px_rgba(0,0,0,0.4)] sm:absolute sm:bottom-0 sm:h-[112%] sm:max-w-none"
+                        className="relative z-10 -mb-10 h-full max-w-full object-contain object-bottom drop-shadow-[0_12px_25px_rgba(0,0,0,0.4)] sm:absolute sm:bottom-0 sm:h-[112%] sm:max-w-none"
                         initial={{ opacity: 0, y: 18 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.12, duration: 0.45 }}
@@ -195,7 +217,7 @@ export default function DetailPopup({
                   </div>
 
                   {/* Capabilities */}
-                  <div className="relative z-10 grid grid-cols-2 gap-2 px-3 pb-3 sm:grid-cols-4 sm:gap-3 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">
+                  <div className="relative z-10 grid grid-cols-2 gap-2 px-3 pb-3 sm:gap-3 sm:px-5 sm:pb-5">
                     {capabilities.map(
                       ({ label, detail, Icon: CapabilityIcon }, i) => (
                         <motion.div
@@ -205,8 +227,8 @@ export default function DetailPopup({
                           transition={{ delay: 0.08 * i, duration: 0.3 }}
                           className="flex min-w-0 items-center gap-2 rounded-xl border border-emerald-300/15 bg-[#06140f]/80 p-2.5 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/[0.05] sm:gap-3 sm:p-3"
                         >
-                          <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/[0.07] text-emerald-400 sm:size-11">
-                            <CapabilityIcon size={21} />
+                          <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/[0.07] text-emerald-400 sm:size-10">
+                            <CapabilityIcon size={19} />
                           </div>
 
                           <div className="min-w-0">
@@ -223,51 +245,71 @@ export default function DetailPopup({
                   </div>
                 </section>
 
-                {/* About */}
-                <section className="rounded-2xl border border-emerald-300/20 bg-[#06140f]/75 p-5 sm:rounded-3xl sm:p-7 lg:p-8">
-                  <div className="flex items-start justify-between gap-3">
+                {/* Dynamic section content */}
+                <section className="rounded-2xl border border-emerald-300/20 bg-[#06140f]/75 p-4 sm:rounded-3xl sm:p-6">
+                  <div className="mb-5 flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="h-8 w-1.5 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.3)]" />
+                      <div className="h-8 w-1.5 shrink-0 rounded-full bg-emerald-400" />
 
-                      <h3 className="text-sm font-black tracking-[0.13em] text-emerald-400 sm:text-lg sm:tracking-[0.16em]">
-                        ABOUT THIS SECTION
-                      </h3>
+                      <div>
+                        <h3 className="text-sm font-black tracking-[0.13em] text-emerald-400">
+                          {location.id === "projects"
+                            ? "PROJECT SHOWCASE"
+                            : location.id === "skills"
+                              ? "TECHNICAL SKILLS"
+                              : "ABOUT THIS SECTION"}
+                        </h3>
+
+                        <p className="mt-1 text-xs text-slate-400">
+                          {location.id === "projects"
+                            ? "Problems, solutions, and technologies"
+                            : location.id === "skills"
+                              ? "Technologies and development tools"
+                              : "Explore my developer journey"}
+                        </p>
+                      </div>
                     </div>
 
-                    <span className="shrink-0 pt-1 text-[10px] font-bold tracking-[0.18em] text-white/40 sm:text-xs">
+                    <span className="shrink-0 pt-1 text-[10px] font-bold tracking-[0.18em] text-white/40">
                       {String(index).padStart(2, "0")}
                       <span className="mx-1.5 text-emerald-400/50">/</span>
                       {String(totalLocations).padStart(2, "0")}
                     </span>
                   </div>
 
-                  <div className="ml-[18px] mt-5 border-b border-emerald-300/15 pb-6 sm:ml-[22px] sm:mt-6 sm:pb-7">
-                    <p className="whitespace-pre-line break-words text-[14px] leading-7 text-slate-200/90 sm:text-base sm:leading-8 lg:text-lg">
-                      {location.detail}
-                    </p>
-                  </div>
+                  {location.id === "skills" && location.skills ? (
+                    <SkillsSection groups={location.skills} />
+                  ) : location.id === "projects" && location.projects ? (
+                    <ProjectsSection projects={location.projects} />
+                  ) : (
+                    <div className="border-b border-emerald-300/15 pb-5">
+                      <p className="whitespace-pre-line break-words text-sm leading-7 text-slate-200/90 sm:text-base sm:leading-8">
+                        {location.detail}
+                      </p>
 
-                  <div className="ml-[18px] mt-5 flex items-center gap-3 sm:ml-[22px] sm:mt-6 sm:gap-5">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-emerald-400 text-emerald-400 sm:size-14">
-                      <Navigation size={25} />
+                      <div className="mt-5 flex items-center gap-3 sm:gap-4">
+                        <div className="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-emerald-400 text-emerald-400 sm:size-12">
+                          <Navigation size={22} />
+                        </div>
+
+                        <p className="text-xs leading-6 text-slate-400 sm:text-sm sm:leading-7">
+                          Explore my projects, technical skills, and development
+                          journey.
+                        </p>
+                      </div>
                     </div>
-
-                    <p className="text-xs leading-6 text-slate-400 sm:text-sm sm:leading-7">
-                      Explore my projects, technical skills, and development
-                      journey.
-                    </p>
-                  </div>
+                  )}
                 </section>
 
                 {/* Explore further */}
-                <section className="group rounded-2xl border border-emerald-400/35 bg-gradient-to-br from-emerald-500/[0.09] to-[#06140f]/90 p-4 transition-colors hover:border-emerald-300/60 sm:rounded-3xl sm:p-6">
-                  <div className="flex items-center gap-4 sm:gap-6">
-                    <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-400/[0.08] text-emerald-400 sm:size-20">
-                      <Navigation size={37} strokeWidth={1.8} />
+                <section className="group rounded-2xl border border-emerald-400/25 bg-[#06140f]/80 p-4 transition-colors hover:border-emerald-300/50 sm:rounded-3xl sm:p-5">
+                  <div className="flex items-center gap-4">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-400/[0.06] text-emerald-400 sm:size-16">
+                      <Navigation size={30} strokeWidth={1.8} />
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-black tracking-wide text-white sm:text-lg">
+                      <h3 className="text-sm font-black tracking-wide text-white">
                         EXPLORE FURTHER
                       </h3>
 
@@ -278,8 +320,8 @@ export default function DetailPopup({
                       </p>
                     </div>
 
-                    <div className="hidden size-14 shrink-0 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/[0.05] text-white/80 transition-all group-hover:translate-x-1 group-hover:border-emerald-400 group-hover:text-emerald-300 sm:flex">
-                      <ArrowRight size={26} />
+                    <div className="hidden size-10 shrink-0 items-center justify-center rounded-full border border-emerald-400/30 text-white/80 transition-all group-hover:translate-x-1 group-hover:border-emerald-400 group-hover:text-emerald-300 sm:flex">
+                      <ArrowRight size={22} />
                     </div>
                   </div>
                 </section>
@@ -288,18 +330,18 @@ export default function DetailPopup({
                 <button
                   type="button"
                   onClick={onAskJP}
-                  className="group flex min-h-14 w-full items-center justify-center gap-3 rounded-full border border-emerald-200/30 bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-400 px-5 py-4 text-sm font-black text-[#032017] shadow-[0_0_28px_rgba(16,185,129,0.13)] transition-all hover:brightness-110 hover:shadow-[0_0_36px_rgba(16,185,129,0.24)] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04110d] sm:min-h-[68px] sm:text-base"
+                  className="group flex min-h-14 w-full items-center justify-center gap-3 rounded-xl border border-emerald-300/30 bg-emerald-400 px-5 py-4 text-sm font-black text-[#032017] transition-colors hover:bg-emerald-300 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04110d] sm:min-h-16 sm:text-base"
                 >
-                  <Sparkles size={22} />
+                  <Sparkles size={21} />
                   <span>Ask JP about this</span>
                   <ArrowRight
-                    size={23}
+                    size={22}
                     className="transition-transform group-hover:translate-x-1"
                   />
                 </button>
 
                 {/* Progress */}
-                <div className="px-2 pb-2 pt-1 sm:px-4 sm:pt-2">
+                <div className="px-2 pb-3 pt-1 sm:px-3">
                   <div className="mb-3 flex items-center justify-between gap-3 text-[10px] font-bold tracking-[0.14em] text-white/35 sm:text-xs sm:tracking-[0.18em]">
                     <span>PORTFOLIO PROGRESS</span>
                     <span className="text-emerald-300">
@@ -316,7 +358,7 @@ export default function DetailPopup({
                     aria-label="Portfolio progress"
                   >
                     <motion.div
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-300"
+                      className="h-full rounded-full bg-emerald-400"
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
                       transition={{ duration: 0.5 }}
@@ -324,7 +366,7 @@ export default function DetailPopup({
                   </div>
 
                   <div className="mt-5 flex items-center justify-center gap-2 pb-1 text-xs text-slate-500">
-                    <span className="h-px w-4 bg-cyan-500/70" />
+                    <span className="h-px w-4 bg-emerald-500/60" />
                     <span>Powered by</span>
                     <span className="font-extrabold tracking-tight text-slate-400">
                       ◈ Netlify
