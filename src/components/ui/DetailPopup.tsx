@@ -70,6 +70,8 @@ export default function DetailPopup({
   useEffect(() => {
     if (!visible) return;
 
+    onAskJP()
+    
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
