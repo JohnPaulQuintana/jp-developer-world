@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 type NPCRegistration = {
@@ -33,6 +32,18 @@ function randomBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
+/**
+ * Estimate how long the typewriter needs to finish.
+ * Assumes approximately 45ms per character, then keeps
+ * the completed message visible for another 2 seconds.
+ */
+function getMessageDuration(message: string) {
+  const typingDuration = message.length * 45;
+  const readingPause = 2000;
+
+  return Math.max(7000, typingDuration + readingPause);
+}
+
 function scheduleNext(minDelay = 7000, maxDelay = 12000) {
   if (nextTimer) clearTimeout(nextTimer);
 
@@ -46,6 +57,7 @@ function speakNext() {
   if (busy || queue.length === 0) return;
 
   const npc = queue.shift();
+
   if (!npc || !registeredNPCs.has(npc.id)) {
     scheduleNext(1000, 2000);
     return;
@@ -55,8 +67,9 @@ function speakNext() {
   activeNPCId = npc.id;
 
   const message =
-    npc.messages[Math.floor(Math.random() * npc.messages.length)] ??
-    "There is always something new to discover here.";
+    npc.messages[
+      Math.floor(Math.random() * npc.messages.length)
+    ] ?? "There is always something new to discover here.";
 
   publish({
     id: npc.id,
@@ -66,6 +79,7 @@ function speakNext() {
 
   finishTimer = setTimeout(() => {
     finishTimer = undefined;
+
     publish(null);
 
     activeNPCId = null;
@@ -76,7 +90,7 @@ function speakNext() {
     }
 
     scheduleNext();
-  }, randomBetween(5000, 7500));
+  }, getMessageDuration(message));
 }
 
 export function registerNPC(npc: NPCRegistration) {
@@ -95,16 +109,21 @@ export function unregisterNPC(id: string) {
   registeredNPCs.delete(id);
 
   for (let i = queue.length - 1; i >= 0; i--) {
-    if (queue[i].id === id) queue.splice(i, 1);
+    if (queue[i].id === id) {
+      queue.splice(i, 1);
+    }
   }
 
   if (activeNPCId === id) {
     if (finishTimer) clearTimeout(finishTimer);
+
     finishTimer = undefined;
 
     publish(null);
+
     activeNPCId = null;
     busy = false;
+
     scheduleNext(1500, 3000);
   }
 
