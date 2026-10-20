@@ -17,10 +17,11 @@ import {
 } from "lucide-react";
 
 import mascot from "../../assets/hello.png";
-import type { LocationId, PortfolioLocation } from "../../data/locations";
+import type { LocationId } from "../../data/locations";
 
 import SkillsSection from "./SkillsSection";
 import ProjectsSection from "./ProjectsSection";
+import type { CityLocation } from "../world/extended/FloatingProjectCity/types";
 
 const iconMap = {
   home: House,
@@ -32,8 +33,8 @@ const iconMap = {
 } satisfies Record<LocationId, typeof House>;
 
 type DetailPopupProps = {
-  location: PortfolioLocation;
-  locations: PortfolioLocation[];
+  location: CityLocation;
+  locations: CityLocation[];
   visible: boolean;
   onClose: () => void;
   onAskJP: () => void;
@@ -53,11 +54,13 @@ export default function DetailPopup({
   onClose,
   onAskJP,
 }: DetailPopupProps) {
-  const Icon = iconMap[location.id];
+  // const Icon = iconMap[location.id];
+  const Icon =
+    location.id in iconMap
+      ? iconMap[location.id as keyof typeof iconMap]
+      : iconMap.projects;
 
-  const locationIndex = locations.findIndex(
-    (item) => item.id === location.id,
-  );
+  const locationIndex = locations.findIndex((item) => item.id === location.id);
 
   const index = locationIndex >= 0 ? locationIndex + 1 : 1;
   const totalLocations = locations.length;
@@ -70,8 +73,8 @@ export default function DetailPopup({
   useEffect(() => {
     if (!visible) return;
 
-    onAskJP()
-    
+    onAskJP();
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();

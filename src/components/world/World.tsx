@@ -1,13 +1,14 @@
 
 import type {
-  PortfolioLocation,
+  // PortfolioLocation,
   LocationId,
 } from '../../data/locations'
+import type { CityLocation } from './extended/FloatingProjectCity/types'
 import WorldScene from './WorldScene'
 
 export type WorldProps = {
   selectedId: LocationId
-  onSelect: (location: PortfolioLocation) => void
+  onSelect: (location: CityLocation) => void
   onMascotClick: () => void
   onReady: () => void
 }

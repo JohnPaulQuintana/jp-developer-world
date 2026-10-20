@@ -3,10 +3,11 @@ import {
   Mouse,
 } from 'lucide-react'
 
-import type { PortfolioLocation } from '../../data/locations'
+// import type { PortfolioLocation } from '../../data/locations'
+import type { CityLocation } from '../world/extended/FloatingProjectCity/types'
 
 type FooterProps = {
-  location: PortfolioLocation
+  location: CityLocation
 }
 
 export default function Footer({ location }: FooterProps) {

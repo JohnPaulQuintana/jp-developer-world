@@ -14,18 +14,19 @@ import {
   locations,
   storyMessages,
   type LocationId,
-  type PortfolioLocation,
+  // type PortfolioLocation,
 } from "./data/locations";
+import type { CityLocation } from "./components/world/extended/FloatingProjectCity/types";
 
 export default function App() {
   const [selected, setSelected] =
-    useState<PortfolioLocation>(locations[0]);
+    useState<CityLocation>(locations[0]);
 
   const [dialogueOpen, setDialogueOpen] = useState(true);
   const [showDetails, setShowDetails] = useState(true);
   const [isWorldLoading, setIsWorldLoading] = useState(true);
 
-  const chooseLocation = (location: PortfolioLocation) => {
+  const chooseLocation = (location: CityLocation) => {
     setSelected(location);
     setShowDetails(true);
     setDialogueOpen(false);
@@ -80,7 +81,11 @@ export default function App() {
       {/* JP guide dialogue */}
       <DialoguePopup
         selectedId={selected.id as LocationId}
-        message={storyMessages[selected.id]}
+        message={
+          selected.id in storyMessages
+            ? storyMessages[selected.id as LocationId]
+            : "Welcome to my projects! Explore the islands to discover what I've built."
+        }
         visible={dialogueOpen && !isWorldLoading}
         onClose={() => setDialogueOpen(false)}
         locations={locations}
