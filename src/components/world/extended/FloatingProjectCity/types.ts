@@ -2,21 +2,26 @@
 import type {
   LocationId,
   PortfolioLocation,
+  AdditionalProjectLocation,
 } from "../../../../data/locations";
 
 export type Point3 = [number, number, number];
 
+export type CityLocation =
+  | PortfolioLocation
+  | AdditionalProjectLocation;
+
 export type FloatingProjectCityProps = {
-  selectedId: LocationId;
-  onSelect: (location: PortfolioLocation) => void;
+  selectedId: LocationId | AdditionalProjectLocation["id"];
+  onSelect: (location: CityLocation) => void;
 };
 
 export type MiniCityProps = {
-  location: PortfolioLocation;
+  location: CityLocation;
   index: number;
   position: Point3;
   selected: boolean;
-  onSelect: (location: PortfolioLocation) => void;
+  onSelect: (location: CityLocation) => void;
 };
 
 export type BridgeProps = {

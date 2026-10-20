@@ -3,9 +3,11 @@ import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import { MathUtils, type Group } from "three";
 import { useRef, type ReactNode } from "react";
 import type { PortfolioLocation } from "../../data/locations";
+import type { CityLocation } from "../world/extended/FloatingProjectCity/types";
 
 type BuildingProps = {
-  location: PortfolioLocation;
+  // location: PortfolioLocation;
+  location: CityLocation;
   active: boolean;
   onSelect: () => void;
 };
@@ -220,10 +222,7 @@ function WoodenDoor({
 
       {/* Hinged door */}
       <group ref={doorRef} position={[-width / 2, 0, 0]}>
-        <mesh
-          position={[width / 2, height / 2, 0]}
-          castShadow
-        >
+        <mesh position={[width / 2, height / 2, 0]} castShadow>
           <boxGeometry args={[width, height, 0.035]} />
           <meshStandardMaterial
             color={active ? "#315b32" : "#18231a"}
@@ -1154,13 +1153,17 @@ function BuildingArchitecture({
   return structure;
 }
 
-
 export default function Building({
   location,
   active,
   onSelect,
 }: BuildingProps) {
-  const theme = themes[location.id];
+  // const theme = themes[location.id];
+  const theme: BuildingTheme =
+    location.id in themes
+      ? themes[location.id as keyof typeof themes]
+      : themes.projects;
+
   const size = theme.size;
   const accent = location.color;
   const glow = active ? 2.8 : 0.8;
@@ -1179,8 +1182,7 @@ export default function Building({
   useFrame(({ clock }, delta) => {
     // Floating marker animation.
     if (markerRef.current) {
-      const bob =
-        active ? Math.sin(clock.elapsedTime * 2.5) * 0.035 : 0;
+      const bob = active ? Math.sin(clock.elapsedTime * 2.5) * 0.035 : 0;
 
       markerRef.current.position.y = MathUtils.damp(
         markerRef.current.position.y,
@@ -1203,9 +1205,7 @@ export default function Building({
 
     // Subtle pulse around the selected building.
     if (selectionRingRef.current) {
-      const pulse = active
-        ? 1 + Math.sin(clock.elapsedTime * 3) * 0.035
-        : 1;
+      const pulse = active ? 1 + Math.sin(clock.elapsedTime * 3) * 0.035 : 1;
 
       const nextScale = MathUtils.damp(
         selectionRingRef.current.scale.x,
@@ -1334,10 +1334,7 @@ export default function Building({
       <ForestDetails size={size} width={width} depth={depth} glow={glow} />
 
       {/* Animated floating emerald marker */}
-      <group
-        ref={markerRef}
-        position={[0, roofBaseY + 0.43 * size, 0]}
-      >
+      <group ref={markerRef} position={[0, roofBaseY + 0.43 * size, 0]}>
         <mesh>
           <octahedronGeometry args={[active ? 0.065 : 0.04]} />
           <meshStandardMaterial

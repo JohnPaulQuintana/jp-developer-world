@@ -377,6 +377,13 @@ export const projectLocationConfigs: ProjectLocationConfig[] = [
   },
 ];
 
+export type AdditionalProjectLocation = Omit<
+  PortfolioLocation,
+  "id"
+> & {
+  id: `project-${string}`;
+};
+
 /* =========================================
    GENERATED PROJECT LOCATIONS
    ========================================= */
@@ -384,7 +391,7 @@ export const projectLocationConfigs: ProjectLocationConfig[] = [
 // These are additional locations.
 // The original `locations` array remains unchanged.
 
-export const additionalProjectLocations: PortfolioLocation[] =
+export const additionalProjectLocations: AdditionalProjectLocation[] =
   projectLocationConfigs.flatMap((config) => {
     const project = projects.find(
       (item) => item.id === config.projectId,
@@ -397,7 +404,7 @@ export const additionalProjectLocations: PortfolioLocation[] =
 
     return [
       {
-        id: "projects",
+        id: config.id,
         title: config.title,
         shortTitle: config.shortTitle,
         description: config.description,
