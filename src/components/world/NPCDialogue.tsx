@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Html } from "@react-three/drei";
 
@@ -22,7 +21,6 @@ export default function NPCDialogue({
     }
 
     setDisplayed("");
-
     let index = 0;
 
     const interval = window.setInterval(() => {
@@ -41,7 +39,7 @@ export default function NPCDialogue({
 
   return (
     <Html
-      position={[0, 2.2, 0]}
+      position={[0, 5, 0]}
       center
       distanceFactor={10}
       zIndexRange={[100, 0]}
@@ -59,7 +57,7 @@ export default function NPCDialogue({
           padding: "8px 10px",
           border: "1px solid rgba(123, 216, 143, 0.65)",
           borderRadius: "9px",
-          background: "rgba(9, 22, 14, 0.96)",
+          background: "rgba(9, 22, 14, 0.97)",
           color: "#f2f5ef",
           boxShadow: "0 3px 12px rgba(0,0,0,0.28)",
           fontFamily: "system-ui, sans-serif",
@@ -92,7 +90,6 @@ export default function NPCDialogue({
           )}
         </div>
 
-        {/* Speech bubble pointer */}
         <div
           style={{
             position: "absolute",

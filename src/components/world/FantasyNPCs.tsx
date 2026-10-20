@@ -1,15 +1,19 @@
+
 import FantasyNPC from "./FantasyNPC";
 import WanderingNPC from "./WanderingNPC";
+import {
+  villageBounds,
+  villageObstacles,
+} from "./villageNavigation";
 
 export default function FantasyNPCs() {
   return (
     <group name="fantasy-npcs">
-      {/* Female forest villager */}
       <WanderingNPC
-        startPosition={[-2.5, 0, -1.5]}
-        radius={0.8}
+        startPosition={[-2.4, 0, -1.4]}
+        bounds={villageBounds}
+        obstacles={villageObstacles}
         speed={0.3}
-        facingOffset={0}
       >
         <FantasyNPC
           type="female"
@@ -19,12 +23,11 @@ export default function FantasyNPCs() {
         />
       </WanderingNPC>
 
-      {/* Male village guard */}
       <WanderingNPC
-        startPosition={[2.5, 0, -2]}
-        radius={0.8}
+        startPosition={[2.2, 0, -1.4]}
+        bounds={villageBounds}
+        obstacles={villageObstacles}
         speed={0.35}
-        facingOffset={0}
       >
         <FantasyNPC
           type="male"
@@ -34,12 +37,11 @@ export default function FantasyNPCs() {
         />
       </WanderingNPC>
 
-      {/* Female mage with staff */}
       <WanderingNPC
-        startPosition={[4, 0, 2]}
-        radius={0.8}
+        startPosition={[2.2, 0, 3.0]}
+        bounds={villageBounds}
+        obstacles={villageObstacles}
         speed={0.25}
-        facingOffset={0}
       >
         <FantasyNPC
           type="mage"
@@ -49,12 +51,11 @@ export default function FantasyNPCs() {
         />
       </WanderingNPC>
 
-      {/* Male forest ranger */}
       <WanderingNPC
-        startPosition={[-4, 0, 2.5]}
-        radius={0.8}
+        startPosition={[-2.3, 0, 3.0]}
+        bounds={villageBounds}
+        obstacles={villageObstacles}
         speed={0.3}
-        facingOffset={0}
       >
         <FantasyNPC
           type="ranger"

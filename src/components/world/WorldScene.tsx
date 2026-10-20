@@ -1,41 +1,39 @@
 
-import { useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 import type {
   PortfolioLocation,
   LocationId,
-} from '../../data/locations'
+} from "../../data/locations";
 
-import MapTiles from './MapTiles'
-import WorldLighting from './WorldLighting'
-import WorldControls from './WorldControls'
-import WindEffects from './WindEffects'
+import MapTiles from "./MapTiles";
+import WorldLighting from "./WorldLighting";
+import WorldControls from "./WorldControls";
+import WindEffects from "./WindEffects";
 import FantasyNPCs from "./FantasyNPCs";
+// import FloatingProjectCity from "../world/extended/FloatingProjectCity";
+import FloatingProjectCity from "./extended/FloatingProjectCity/index";
 
 type WorldSceneProps = {
-  selectedId: LocationId
-  onSelect: (location: PortfolioLocation) => void
-  onMascotClick: () => void
-  onReady: () => void
-}
+  selectedId: LocationId;
+  onSelect: (location: PortfolioLocation) => void;
+  onMascotClick: () => void;
+  onReady: () => void;
+};
 
-/**
- * Signals readiness after the first rendered frame begins.
- * The ref prevents the callback from running on every frame.
- */
 function SceneReady({ onReady }: { onReady: () => void }) {
-  const hasReportedReady = useRef(false)
+  const hasReportedReady = useRef(false);
 
   useFrame(() => {
-    if (hasReportedReady.current) return
+    if (hasReportedReady.current) return;
 
-    hasReportedReady.current = true
-    onReady()
-  })
+    hasReportedReady.current = true;
+    onReady();
+  });
 
-  return null
+  return null;
 }
 
 export default function WorldScene({
@@ -55,24 +53,31 @@ export default function WorldScene({
       }}
       gl={{ antialias: true, alpha: true }}
       onCreated={({ gl }) => {
-        gl.setClearColor('#06110d', 0)
-        gl.toneMapping = THREE.ACESFilmicToneMapping
+        gl.setClearColor("#06110d", 0);
+        gl.toneMapping = THREE.ACESFilmicToneMapping;
       }}
     >
       <SceneReady onReady={onReady} />
 
       <WorldLighting />
 
+      {/* Existing portfolio village */}
       <MapTiles
         selectedId={selectedId}
         onSelect={onSelect}
       />
-      <FantasyNPCs />
-      <WindEffects />
 
-      {/* <Mascot onClick={onMascotClick} /> */}
+      <FantasyNPCs />
+
+      {/* New floating city containing all portfolio projects */}
+      <FloatingProjectCity
+        selectedId={selectedId}
+        onSelect={onSelect}
+      />
+
+      <WindEffects />
 
       <WorldControls />
     </Canvas>
-  )
+  );
 }

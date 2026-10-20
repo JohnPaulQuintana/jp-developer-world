@@ -312,3 +312,101 @@ export const storyMessages: Record<LocationId, string> = {
   contact:
     "You've reached the Contact Beacon! Have a project, an opportunity, or an idea you'd like to bring to life? Let's connect and see what we can build together.",
 };
+
+
+/* =========================================
+   ADDITIONAL PROJECT LOCATION CONFIGURATION
+   ========================================= */
+
+export type ProjectLocationConfig = {
+  id: `project-${string}`;
+  projectId: string;
+  title: string;
+  shortTitle: string;
+  description: string;
+  position: [number, number];
+  color: string;
+  locked?: boolean;
+};
+
+export const projectLocationConfigs: ProjectLocationConfig[] = [
+  {
+    id: "project-navilink",
+    projectId: "navilink",
+    title: "NaviLink Archive",
+    shortTitle: "NaviLink",
+    description: "A magical archive for organizing useful links.",
+    position: [-5, -4],
+    color: "#19f58a",
+  },
+  {
+    id: "project-naviatlas",
+    projectId: "naviatlas",
+    title: "NaviAtlas Observatory",
+    shortTitle: "NaviAtlas",
+    description: "An ancient observatory for mapping indoor spaces.",
+    position: [-2, -6],
+    color: "#a4ffce",
+  },
+  {
+    id: "project-navitap",
+    projectId: "navitap",
+    title: "NaviTap Trading Post",
+    shortTitle: "NaviTap",
+    description: "A forest trading post connecting businesses and customers.",
+    position: [5, -5],
+    color: "#19f58a",
+  },
+  {
+    id: "project-risk-portal",
+    projectId: "risk-portal",
+    title: "Risk Fortress",
+    shortTitle: "Risk Portal",
+    description: "A fortified outpost for risk monitoring and business systems.",
+    position: [7, 0],
+    color: "#a4ffce",
+  },
+  {
+    id: "project-gobus",
+    projectId: "gobus",
+    title: "GoBus Waystation",
+    shortTitle: "GoBus",
+    description: "A forest waystation for fleet tracking and journey monitoring.",
+    position: [5, 4],
+    color: "#19f58a",
+  },
+];
+
+/* =========================================
+   GENERATED PROJECT LOCATIONS
+   ========================================= */
+
+// These are additional locations.
+// The original `locations` array remains unchanged.
+
+export const additionalProjectLocations: PortfolioLocation[] =
+  projectLocationConfigs.flatMap((config) => {
+    const project = projects.find(
+      (item) => item.id === config.projectId,
+    );
+
+    // Ignore invalid project IDs rather than creating broken locations.
+    if (!project) {
+      return [];
+    }
+
+    return [
+      {
+        id: "projects",
+        title: config.title,
+        shortTitle: config.shortTitle,
+        description: config.description,
+        detail: `${project.businessProblem}\n\n${project.solution}`,
+        position: config.position,
+        color: config.color,
+        kind: "project",
+        locked: config.locked ?? false,
+        projects: [project],
+      },
+    ];
+  });
