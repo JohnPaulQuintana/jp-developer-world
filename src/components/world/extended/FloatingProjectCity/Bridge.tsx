@@ -1,5 +1,5 @@
-
 import { useMemo } from "react";
+import { Html } from "@react-three/drei";
 import type { BridgeProps, Point3 } from "./types";
 
 type FloatingStone = {
@@ -21,6 +21,10 @@ type DetailRock = {
   color: string;
 };
 
+type BridgeWithLabelProps = BridgeProps & {
+  label?: string;
+};
+
 const STONE_COLORS = [
   "#686b60",
   "#77796a",
@@ -30,27 +34,24 @@ const STONE_COLORS = [
   "#727466",
 ];
 
-const MOSS_COLORS = [
-  "#365f35",
-  "#477b43",
-  "#527d3c",
-  "#639452",
-];
+const MOSS_COLORS = ["#365f35", "#477b43", "#527d3c", "#639452"];
 
-const DETAIL_ROCK_COLORS = [
-  "#55594e",
-  "#737568",
-  "#858575",
-  "#4b4e45",
-];
+const DETAIL_ROCK_COLORS = ["#55594e", "#737568", "#858575", "#4b4e45"];
 
-export default function Bridge({ start, end }: BridgeProps) {
+export default function Bridge({ start, end, label }: BridgeWithLabelProps) {
   const dx = end[0] - start[0];
   const dy = end[1] - start[1];
   const dz = end[2] - start[2];
 
   const length = Math.sqrt(dx * dx + dz * dz);
   const angle = Math.atan2(dx, dz);
+
+  // Place the label in the middle of the bridge.
+  const labelPosition: Point3 = [
+    (start[0] + end[0]) / 2,
+    (start[1] + end[1]) / 2 + 0.85,
+    (start[2] + end[2]) / 2,
+  ];
 
   const { stones, detailRocks } = useMemo(() => {
     const spacing = 0.46;
@@ -62,14 +63,11 @@ export default function Bridge({ start, end }: BridgeProps) {
         const t = index / count;
         const isEndpoint = index === 0 || index === count;
 
-        const sideOffset = isEndpoint
-          ? 0
-          : Math.sin(index * 2.13) * 0.045;
+        const sideOffset = isEndpoint ? 0 : Math.sin(index * 2.13) * 0.045;
 
         const verticalOffset = isEndpoint
           ? 0
-          : Math.sin(t * Math.PI) * 0.09 +
-            Math.sin(index * 1.8) * 0.025;
+          : Math.sin(t * Math.PI) * 0.09 + Math.sin(index * 1.8) * 0.025;
 
         const topWidth = 0.36 + (index % 3) * 0.045;
         const topLength = 0.36 + (index % 4) * 0.035;
@@ -81,18 +79,18 @@ export default function Bridge({ start, end }: BridgeProps) {
             start[0] + dx * t + Math.cos(angle) * sideOffset,
             start[1] + dy * t + verticalOffset,
             start[2] + dz * t - Math.sin(angle) * sideOffset,
-          ],
+          ] as Point3,
           rotation: [
             ((index % 3) - 1) * 0.075,
             angle + ((index % 3) - 1) * 0.09,
             ((index % 4) - 1.5) * 0.055,
-          ],
-          topScale: [topWidth, topHeight, topLength],
+          ] as Point3,
+          topScale: [topWidth, topHeight, topLength] as Point3,
           undersideScale: [
             topWidth * 0.78,
             topHeight * 1.8,
             topLength * 0.78,
-          ],
+          ] as Point3,
           color: STONE_COLORS[index % STONE_COLORS.length],
           mossColor: MOSS_COLORS[index % MOSS_COLORS.length],
           hasMoss: index % 3 !== 0,
@@ -122,15 +120,9 @@ export default function Bridge({ start, end }: BridgeProps) {
             0.08 + ((index + sideIndex) % 2) * 0.04,
             0.07 + ((index + 1) % 3) * 0.025,
           ],
-          rotation: [
-            index * 0.3,
-            angle + index * 0.5,
-            side * 0.25,
-          ],
+          rotation: [index * 0.3, angle + index * 0.5, side * 0.25],
           color:
-            DETAIL_ROCK_COLORS[
-              (index + sideIndex) % DETAIL_ROCK_COLORS.length
-            ],
+            DETAIL_ROCK_COLORS[(index + sideIndex) % DETAIL_ROCK_COLORS.length],
         });
       });
     });
@@ -152,6 +144,134 @@ export default function Bridge({ start, end }: BridgeProps) {
 
   return (
     <group>
+      {/* Optional floating label for the starting bridge */}
+      {label && (
+        <Html
+          position={labelPosition}
+          center
+          distanceFactor={9}
+          zIndexRange={[20, 0]}
+          style={{
+            pointerEvents: "none",
+            userSelect: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "5px",
+              padding: "8px 14px 9px",
+              minWidth: "112px",
+              border: "1px solid rgba(145, 165, 156, 0.3)",
+              borderRadius: "5px",
+              background:
+                "linear-gradient(180deg, rgba(17, 31, 23, 0.96) 0%, rgba(6, 17, 13, 0.97) 100%)",
+              boxShadow:
+                "0 4px 12px rgba(0, 0, 0, 0.3), 0 0 10px rgba(25, 245, 138, 0.06)",
+              transform: "translateY(-3px)",
+            }}
+          >
+            {/* Small fantasy wayfinding marker */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                width: "100%",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  width: "15px",
+                  height: "1px",
+                  background: "rgba(25, 245, 138, 0.65)",
+                }}
+              />
+
+              <span
+                style={{
+                  color: "#19f58a",
+                  fontSize: "8px",
+                  fontWeight: 700,
+                  letterSpacing: "2px",
+                  lineHeight: 1,
+                }}
+              >
+                #354
+              </span>
+
+              <span
+                style={{
+                  width: "15px",
+                  height: "1px",
+                  background: "rgba(25, 245, 138, 0.65)",
+                }}
+              />
+            </div>
+
+            {/* Main bridge name */}
+            <span
+              style={{
+                color: "#f0f5f0",
+                fontSize: "11px",
+                fontWeight: 700,
+                letterSpacing: "1.2px",
+                lineHeight: 1.3,
+                textAlign: "center",
+                textTransform: "uppercase",
+                textShadow: "0 1px 5px rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              {label}
+            </span>
+
+            {/* Understated fantasy accent */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
+                marginTop: "1px",
+              }}
+            >
+              <span
+                style={{
+                  width: "4px",
+                  height: "4px",
+                  borderRadius: "50%",
+                  background: "#19f58a",
+                  boxShadow: "0 0 5px rgba(25, 245, 138, 0.5)",
+                }}
+              />
+
+              <span
+                style={{
+                  width: "24px",
+                  height: "1px",
+                  background: "rgba(25, 245, 138, 0.45)",
+                }}
+              />
+
+              <span
+                style={{
+                  width: "4px",
+                  height: "4px",
+                  borderRadius: "50%",
+                  background: "#19f58a",
+                  boxShadow: "0 0 5px rgba(25, 245, 138, 0.5)",
+                }}
+              />
+            </div>
+          </div>
+        </Html>
+      )}
+
       {/* Main ancient stepping stones */}
       {stones.map((stone) => (
         <group
@@ -167,19 +287,11 @@ export default function Bridge({ start, end }: BridgeProps) {
             receiveShadow
           >
             <dodecahedronGeometry args={[1, 0]} />
-            <meshStandardMaterial
-              color="#41463d"
-              roughness={1}
-              flatShading
-            />
+            <meshStandardMaterial color="#41463d" roughness={1} flatShading />
           </mesh>
 
           {/* Weathered stone surface */}
-          <mesh
-            scale={stone.topScale}
-            castShadow
-            receiveShadow
-          >
+          <mesh scale={stone.topScale} castShadow receiveShadow>
             <dodecahedronGeometry args={[1, 0]} />
             <meshStandardMaterial
               color={stone.color}
@@ -238,17 +350,11 @@ export default function Bridge({ start, end }: BridgeProps) {
                 <mesh
                   key={blade}
                   position={[
-                    -stone.topScale[0] * 0.2 +
-                      blade * 0.035,
+                    -stone.topScale[0] * 0.2 + blade * 0.035,
                     stone.topScale[1] * 0.95,
-                    -stone.topScale[2] * 0.12 +
-                      blade * 0.018,
+                    -stone.topScale[2] * 0.12 + blade * 0.018,
                   ]}
-                  rotation={[
-                    0,
-                    blade * 0.7,
-                    blade % 2 === 0 ? -0.3 : 0.25,
-                  ]}
+                  rotation={[0, blade * 0.7, blade % 2 === 0 ? -0.3 : 0.25]}
                 >
                   <coneGeometry args={[0.018, 0.09, 4]} />
                   <meshStandardMaterial
@@ -274,11 +380,7 @@ export default function Bridge({ start, end }: BridgeProps) {
           receiveShadow
         >
           <dodecahedronGeometry args={[1, 0]} />
-          <meshStandardMaterial
-            color={rock.color}
-            roughness={1}
-            flatShading
-          />
+          <meshStandardMaterial color={rock.color} roughness={1} flatShading />
         </mesh>
       ))}
 
@@ -293,11 +395,7 @@ export default function Bridge({ start, end }: BridgeProps) {
               stone.position[1] - 0.24,
               stone.position[2],
             ]}
-            rotation={[
-              0.15,
-              angle + stone.key,
-              0.2,
-            ]}
+            rotation={[0.15, angle + stone.key, 0.2]}
           >
             <octahedronGeometry args={[0.055, 0]} />
             <meshStandardMaterial

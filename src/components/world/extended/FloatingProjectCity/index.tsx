@@ -1,4 +1,3 @@
-
 import { useMemo } from "react";
 import { ProjectIslandNPCs } from "../../FantasyNPCs";
 import { additionalProjectLocations } from "../../../../data/locations";
@@ -16,10 +15,7 @@ import {
   VILLAGE_CONNECTION,
 } from "./constants";
 
-import type {
-  FloatingProjectCityProps,
-  Point3,
-} from "./types";
+import type { FloatingProjectCityProps, Point3 } from "./types";
 
 export default function FloatingProjectCity({
   selectedId,
@@ -34,9 +30,7 @@ export default function FloatingProjectCity({
 
     const radius = Math.max(
       MIN_CITY_SPACING,
-      count > 2
-        ? 2.8 / Math.sin(Math.PI / count)
-        : MIN_CITY_SPACING,
+      count > 2 ? 2.8 / Math.sin(Math.PI / count) : MIN_CITY_SPACING,
     );
 
     const connectionAngle = Math.atan2(
@@ -54,21 +48,19 @@ export default function FloatingProjectCity({
       const configuredPosition = location.position;
 
       return [
-        HUB_POSITION[0] + Math.cos(angle) * radius + configuredPosition[0] * 0.15,
+        HUB_POSITION[0] +
+          Math.cos(angle) * radius +
+          configuredPosition[0] * 0.15,
         HUB_POSITION[1] + Math.sin(index * 1.7) * 0.22,
-        HUB_POSITION[2] + Math.sin(angle) * radius + configuredPosition[1] * 0.15,
+        HUB_POSITION[2] +
+          Math.sin(angle) * radius +
+          configuredPosition[1] * 0.15,
       ];
     });
   }, [projectLocations]);
 
   const mainBridge = useMemo(
-    () =>
-      getBridgeEndpoints(
-        VILLAGE_CONNECTION,
-        HUB_POSITION,
-        0,
-        HUB_RADIUS,
-      ),
+    () => getBridgeEndpoints(VILLAGE_CONNECTION, HUB_POSITION, 0, HUB_RADIUS),
     [],
   );
 
@@ -79,6 +71,7 @@ export default function FloatingProjectCity({
         <Bridge
           start={mainBridge.start}
           end={mainBridge.end}
+          label="Project Bridge"
         />
       )}
 
@@ -115,7 +108,7 @@ export default function FloatingProjectCity({
       ))}
 
       {/* NPCs patrol on their corresponding project islands */}
-<ProjectIslandNPCs positions={projectPositions} />
+      <ProjectIslandNPCs positions={projectPositions} />
 
       <HubIsland />
     </group>
