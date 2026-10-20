@@ -70,6 +70,12 @@ export default function DetailPopup({
       ? (Math.min(index, totalLocations) / totalLocations) * 100
       : 0;
 
+  const isProjectLocation =
+    location.kind === "project" && Boolean(location.projects?.length);
+
+  const isSkillsLocation =
+    location.id === "skills" && Boolean(location.skills?.length);
+
   useEffect(() => {
     if (!visible) return;
 
@@ -258,17 +264,19 @@ export default function DetailPopup({
 
                       <div>
                         <h3 className="text-sm font-black tracking-[0.13em] text-emerald-400">
-                          {location.id === "projects"
+                          {isProjectLocation
                             ? "PROJECT SHOWCASE"
-                            : location.id === "skills"
+                            : isSkillsLocation
                               ? "TECHNICAL SKILLS"
                               : "ABOUT THIS SECTION"}
                         </h3>
 
                         <p className="mt-1 text-xs text-slate-400">
-                          {location.id === "projects"
-                            ? "Problems, solutions, and technologies"
-                            : location.id === "skills"
+                          {isProjectLocation
+                            ? location.id === "projects"
+                              ? "All projects, problems, solutions, and technologies"
+                              : `Explore ${location.projects?.[0]?.name ?? location.shortTitle}`
+                            : isSkillsLocation
                               ? "Technologies and development tools"
                               : "Explore my developer journey"}
                         </p>
@@ -282,9 +290,9 @@ export default function DetailPopup({
                     </span>
                   </div>
 
-                  {location.id === "skills" && location.skills ? (
+                  {isSkillsLocation && location.skills ? (
                     <SkillsSection groups={location.skills} />
-                  ) : location.id === "projects" && location.projects ? (
+                  ) : isProjectLocation && location.projects ? (
                     <ProjectsSection projects={location.projects} />
                   ) : (
                     <div className="border-b border-emerald-300/15 pb-5">

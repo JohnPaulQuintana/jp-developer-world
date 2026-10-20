@@ -3,17 +3,13 @@ import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-import type {
-  // PortfolioLocation,
-  LocationId,
-} from "../../data/locations";
+import type { LocationId } from "../../data/locations";
 
 import MapTiles from "./MapTiles";
 import WorldLighting from "./WorldLighting";
 import WorldControls from "./WorldControls";
 import WindEffects from "./WindEffects";
 import FantasyNPCs from "./FantasyNPCs";
-// import FloatingProjectCity from "../world/extended/FloatingProjectCity";
 import FloatingProjectCity from "./extended/FloatingProjectCity/index";
 import type { CityLocation } from "./extended/FloatingProjectCity/types";
 
@@ -44,15 +40,25 @@ export default function WorldScene({
 }: WorldSceneProps) {
   return (
     <Canvas
-      shadows
-      dpr={[1, 1.7]}
+      // Avoid the cost of real-time shadow maps for the entire world.
+      shadows={false}
+
+      // Lower resolution reduces GPU workload, especially on mobile.
+      dpr={[1, 1.25]}
+
       camera={{
         position: [10, 11, 12],
         fov: 38,
         near: 0.1,
         far: 100,
       }}
-      gl={{ antialias: true, alpha: true }}
+
+      gl={{
+        antialias: false,
+        alpha: true,
+        powerPreference: "high-performance",
+      }}
+
       onCreated={({ gl }) => {
         gl.setClearColor("#06110d", 0);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
@@ -62,7 +68,6 @@ export default function WorldScene({
 
       <WorldLighting />
 
-      {/* Existing portfolio village */}
       <MapTiles
         selectedId={selectedId}
         onSelect={onSelect}
@@ -70,7 +75,6 @@ export default function WorldScene({
 
       <FantasyNPCs />
 
-      {/* New floating city containing all portfolio projects */}
       <FloatingProjectCity
         selectedId={selectedId}
         onSelect={onSelect}

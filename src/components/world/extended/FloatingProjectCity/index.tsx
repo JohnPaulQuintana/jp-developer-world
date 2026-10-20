@@ -1,6 +1,6 @@
 
 import { useMemo } from "react";
-
+import { ProjectIslandNPCs } from "../../FantasyNPCs";
 import { additionalProjectLocations } from "../../../../data/locations";
 
 import Bridge from "./Bridge";
@@ -113,6 +113,9 @@ export default function FloatingProjectCity({
           onSelect={onSelect}
         />
       ))}
+
+      {/* NPCs patrol on their corresponding project islands */}
+<ProjectIslandNPCs positions={projectPositions} />
 
       <HubIsland />
     </group>
