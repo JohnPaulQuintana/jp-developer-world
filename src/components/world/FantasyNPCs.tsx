@@ -1,4 +1,3 @@
-
 import FantasyNPC from "./FantasyNPC";
 import WanderingNPC from "./WanderingNPC";
 
@@ -10,12 +9,12 @@ export default function FantasyNPCs() {
         startPosition={[-2.5, 0, -1.5]}
         radius={0.8}
         speed={0.3}
-        facingOffset={Math.PI / 2}
+        facingOffset={0}
       >
         <FantasyNPC
           type="female"
           position={[0, 0, 0]}
-          rotation={Math.PI / 4}
+          rotation={0}
           scale={0.2}
         />
       </WanderingNPC>
@@ -25,12 +24,12 @@ export default function FantasyNPCs() {
         startPosition={[2.5, 0, -2]}
         radius={0.8}
         speed={0.35}
-        facingOffset={Math.PI / 2}
+        facingOffset={0}
       >
         <FantasyNPC
           type="male"
           position={[0, 0, 0]}
-          rotation={-Math.PI / 5}
+          rotation={0}
           scale={0.2}
         />
       </WanderingNPC>
@@ -40,12 +39,12 @@ export default function FantasyNPCs() {
         startPosition={[4, 0, 2]}
         radius={0.8}
         speed={0.25}
-        facingOffset={Math.PI / 2}
+        facingOffset={0}
       >
         <FantasyNPC
           type="mage"
           position={[0, 0, 0]}
-          rotation={Math.PI / 2}
+          rotation={0}
           scale={0.2}
         />
       </WanderingNPC>
@@ -55,12 +54,12 @@ export default function FantasyNPCs() {
         startPosition={[-4, 0, 2.5]}
         radius={0.8}
         speed={0.3}
-        facingOffset={Math.PI / 2}
+        facingOffset={0}
       >
         <FantasyNPC
           type="ranger"
           position={[0, 0, 0]}
-          rotation={-Math.PI / 3}
+          rotation={0}
           scale={0.2}
         />
       </WanderingNPC>

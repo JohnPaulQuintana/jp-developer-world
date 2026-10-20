@@ -1,4 +1,3 @@
-
 import { useRef, type ReactNode } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -20,12 +19,12 @@ export default function WanderingNPC({
 }: WanderingNPCProps) {
   const groupRef = useRef<THREE.Group>(null);
   const targetRef = useRef<THREE.Vector3 | null>(null);
+
   const centerRef = useRef(
     new THREE.Vector3(...startPosition),
   );
 
   const directionRef = useRef(new THREE.Vector3());
-  const targetRotationRef = useRef(0);
 
   useFrame((_, delta) => {
     const group = groupRef.current;
@@ -53,24 +52,23 @@ export default function WanderingNPC({
       return;
     }
 
-    // Calculate the actual walking direction.
     directionRef.current.set(dx, 0, dz).normalize();
 
-    // Move the NPC toward its destination.
+    // Move in the direction of the destination.
     const step = Math.min(speed * delta, distance);
 
     group.position.x += directionRef.current.x * step;
     group.position.z += directionRef.current.z * step;
 
-    // A Three.js object faces local -Z by default.
-    // Apply the offset to match the character model's forward axis.
-    targetRotationRef.current =
+    // Face the direction of movement.
+    // The offset compensates for the character's model orientation.
+    const targetRotation =
       Math.atan2(directionRef.current.x, directionRef.current.z) +
       facingOffset;
 
     group.rotation.y = THREE.MathUtils.damp(
       group.rotation.y,
-      targetRotationRef.current,
+      targetRotation,
       8,
       delta,
     );
