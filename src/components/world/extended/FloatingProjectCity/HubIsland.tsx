@@ -1,6 +1,7 @@
 import Tree from "../../Tree";
 import Rock from "../../Rock";
 import { HUB_POSITION, PALETTE } from "./constants";
+import { Html } from "@react-three/drei";
 
 const EDGE_STONES = [
   [-1.15, -0.14, -0.7, 0.34, 0.2, 0.28],
@@ -73,6 +74,66 @@ function MagicCrystal({
 export default function HubIsland() {
   return (
     <group position={HUB_POSITION}>
+      {/* Central hub title */}
+      <Html
+        position={[0, 1.25, 0]}
+        center
+        distanceFactor={8}
+        zIndexRange={[20, 0]}
+        style={{
+          pointerEvents: "none",
+          userSelect: "none",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "5px",
+            padding: "9px 16px",
+            border: "1px solid rgba(145, 165, 156, 0.35)",
+            borderRadius: "5px",
+            background:
+              "linear-gradient(180deg, rgba(17, 31, 23, 0.96), rgba(6, 17, 13, 0.97))",
+            boxShadow: "0 4px 14px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <span
+            style={{
+              color: "#19f58a",
+              fontSize: "8px",
+              fontWeight: 700,
+              letterSpacing: "2.5px",
+            }}
+          >
+            THE DEVELOPER'S REALM
+          </span>
+
+          <span
+            style={{
+              color: "#f0f5f0",
+              fontSize: "13px",
+              fontWeight: 800,
+              letterSpacing: "1.5px",
+              textTransform: "uppercase",
+            }}
+          >
+            Full Stack Projects
+          </span>
+
+          <div
+            style={{
+              width: "32px",
+              height: "2px",
+              borderRadius: "2px",
+              background: "#19f58a",
+              opacity: 0.8,
+            }}
+          />
+        </div>
+      </Html>
       {/* Tapered rocky underside for a floating-island silhouette */}
       <mesh
         position={[0, -0.52, 0]}
