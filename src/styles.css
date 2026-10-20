@@ -17,6 +17,8 @@
   --muted: #91a59c;
   --panel: rgba(5, 16, 12, 0.88);
   --line: rgba(81, 166, 122, 0.28);
+
+  scroll-behavior: smooth;
 }
 
 * {
@@ -26,17 +28,20 @@
 html {
   min-width: 320px;
   min-height: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   overflow-y: auto;
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 #root {
@@ -60,8 +65,15 @@ svg {
   max-width: 100%;
 }
 
+/* Smooth scrolling for internal navigation */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Respect accessibility preferences */
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html,
+  :root {
     scroll-behavior: auto;
   }
 }

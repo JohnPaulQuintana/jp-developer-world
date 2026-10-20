@@ -4,7 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 import type {
-  PortfolioLocation,
+  // PortfolioLocation,
   LocationId,
 } from "../../data/locations";
 
@@ -15,10 +15,11 @@ import WindEffects from "./WindEffects";
 import FantasyNPCs from "./FantasyNPCs";
 // import FloatingProjectCity from "../world/extended/FloatingProjectCity";
 import FloatingProjectCity from "./extended/FloatingProjectCity/index";
+import type { CityLocation } from "./extended/FloatingProjectCity/types";
 
 type WorldSceneProps = {
   selectedId: LocationId;
-  onSelect: (location: PortfolioLocation) => void;
+  onSelect: (location: CityLocation) => void;
   onMascotClick: () => void;
   onReady: () => void;
 };
