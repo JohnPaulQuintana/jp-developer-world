@@ -76,13 +76,23 @@
 }
 
 .brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 1px solid rgba(25, 245, 138, 0.3);
+  border-radius: 12px;
+  /* background: var(--green); */
+  background: rgba(4, 16, 11, 0.94);
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 700;
-  font-size: 29px;
-  font-style: italic;
-  letter-spacing: -3px;
-  color: var(--green);
-  text-shadow: 0 0 24px rgba(25, 245, 138, 0.28);
+  font-weight: 800;
+  font-size: 16px;
+  font-style: normal;
+  letter-spacing: -1px;
+  color: #0cc480;
+  /* box-shadow: 0 0 24px rgba(25, 245, 138, 0.15); */
 }
 
 .brand-copy {
