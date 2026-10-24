@@ -7,6 +7,7 @@ import {
   Mail,
   UserRound,
   Wrench,
+  FolderOpen
 } from 'lucide-react'
 
 import type {
@@ -41,7 +42,7 @@ export default function Sidebar({
 >
       <div className="flex-1 space-y-2 overflow-y-auto">
         {locations.map((location) => {
-          const NavIcon = iconMap[location.id]
+          const NavIcon = iconMap[location.id as LocationId] ?? FolderOpen;
 
           return (
             <button
