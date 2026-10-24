@@ -1,4 +1,10 @@
 
+import { caseStudies } from "./caseStudies";
+
+/* =========================================
+   TYPES
+   ========================================= */
+
 export type LocationId =
   | "home"
   | "projects"
@@ -7,18 +13,25 @@ export type LocationId =
   | "experience"
   | "contact";
 
+export type ProjectStatus = "In development" | "Prototype" | "Live";
+
 export type PortfolioProject = {
   id: string;
   name: string;
+  subtitle: string;
   category: string;
   summary: string;
   businessProblem: string;
   solution: string;
+  result: string;
   technologies: string[];
   image: string;
+  images: string[];
   githubUrl: string | null;
   liveUrl: string | null;
-  status: "In development" | "Prototype" | "Live";
+  status: ProjectStatus;
+  confidential: boolean;
+  type: string[];
 };
 
 export type SkillGroup = {
@@ -36,7 +49,7 @@ export type LocationKind =
   | "contact";
 
 export type PortfolioLocation = {
-  id: LocationId;
+  id: LocationId | `project-${string}`;
   title: string;
   shortTitle: string;
   description: string;
@@ -49,116 +62,143 @@ export type PortfolioLocation = {
   projects?: PortfolioProject[];
 };
 
-export const projects: PortfolioProject[] = [
-  {
-    id: "navilink",
-    name: "NaviLink",
-    category: "Link Management",
-    summary:
-      "A platform for saving, organizing, and revisiting useful links.",
-    businessProblem:
-      "Useful links can become difficult to organize and return to when they are scattered across browser tabs, messages, and bookmarks.",
-    solution:
-      "A link-saving application built around organized spaces, collections, link previews, and reading-session progress.",
-    technologies: [
-      "React",
-      "TypeScript",
-      "Laravel",
-      "Supabase",
-    ],
-    image: "/images/projects/navilink.png",
-    githubUrl: null,
-    liveUrl: null,
-    status: "In development",
-  },
-  {
-    id: "naviatlas",
-    name: "NaviAtlas",
-    category: "Indoor Navigation",
-    summary:
-      "An interactive navigation concept for indoor spaces and floor maps.",
-    businessProblem:
-      "Visitors can struggle to understand building layouts and locate rooms or destinations in unfamiliar indoor environments.",
-    solution:
-      "An interactive mapping approach using SVG floor maps and connected navigation concepts to make indoor spaces easier to explore.",
-    technologies: [
-      "React",
-      "TypeScript",
-      "SVG",
-      "Interactive Maps",
-    ],
-    image: "/images/projects/naviatlas.png",
-    githubUrl: null,
-    liveUrl: null,
-    status: "Prototype",
-  },
-  {
-    id: "navitap",
-    name: "NaviTap",
-    category: "Business Tools",
-    summary:
-      "A QR-code and NFC experience that directs customers to business review pages.",
-    businessProblem:
-      "Customers may not leave reviews when finding the correct review page requires too many steps.",
-    solution:
-      "A tap-or-scan experience designed to take customers directly to a business's Google review page, with room to expand into business management and analytics.",
-    technologies: [
-      "QR Codes",
-      "NFC",
-      "Web Development",
-      "API Integration",
-    ],
-    image: "/images/projects/navitap.png",
-    githubUrl: null,
-    liveUrl: null,
-    status: "In development",
-  },
-  {
-    id: "risk-portal",
-    name: "Risk Management Portal",
-    category: "Business Systems",
-    summary:
-      "A project-aware application for managing access and risk-related workflows.",
-    businessProblem:
-      "Risk-related workflows need a structured way to organize project access, user permissions, and risk-monitoring activities.",
-    solution:
-      "A multi-project application with a FastAPI backend, a TypeScript frontend, JWT authentication, and role-based project access.",
-    technologies: [
-      "Python",
-      "FastAPI",
-      "PostgreSQL",
-      "SQLAlchemy",
-      "React",
-      "TypeScript",
-    ],
-    image: "/images/projects/risk-portal.png",
-    githubUrl: null,
-    liveUrl: null,
-    status: "In development",
-  },
-  {
-    id: "gobus",
-    name: "GoBus",
-    category: "Fleet Management",
-    summary:
-      "A bus-tracking system with location updates and operator monitoring.",
-    businessProblem:
-      "Fleet operators need visibility into vehicle locations, service status, passenger counts, and emergency events.",
-    solution:
-      "A bus-tracking application with map-based vehicle monitoring, location updates, and an operator dashboard for fleet metrics.",
-    technologies: [
-      "React Native",
-      "Expo",
-      "Maps",
-      "Laravel",
-      "Recharts",
-    ],
-    image: "/images/projects/gobus.png",
-    githubUrl: null,
-    liveUrl: null,
-    status: "In development",
-  },
-];
+/* =========================================
+   PROJECT HELPERS
+   ========================================= */
+
+const PROJECT_ID_OVERRIDES: Record<string, string> = {
+  "Indoor Navigation & Spatial Mapping Engine (NaviAtlas)": "naviatlas",
+
+  "License Plate Recognition & Vehicle Identification System":
+    "plate-recognition",
+
+  "Construction Warehouse & Project Resource Management Platform (iBodegero)":
+    "ibodegero",
+
+  "Public Transit Operations & Passenger Information Platform (GoBus)":
+    "gobus",
+
+  "Global Location Intelligence & Lead Discovery Platform (SpotDeck)":
+    "spotdeck",
+
+  "Gamified Object-Oriented Programming Learning Platform (CodeVision)":
+    "codevision",
+
+  "Enterprise Spreadsheet Governance & Monitoring System":
+    "spreadsheet-governance",
+
+  "Enterprise Ad Operations Data Pipeline": "ad-operations",
+
+  "Real-Time Crypto Market Data & Pricing System": "crypto-market-data",
+
+  "Controlled SQL Execution & Reporting Desktop Platform": "sql-reporting",
+
+  "Multi-Platform Ad Account Monitoring System": "ad-account-monitoring",
+
+  "Identity Verification & Compliance KYC Platform (Face API Integration)":
+    "kyc-platform",
+
+  "Risk Intelligence & Abuse Detection API": "risk-intelligence",
+
+  "Unified Email Aggregation & Workspace Client (NaviSync)": "navisync",
+
+  "Distributed Link Intelligence & Management Platform (NaviLink)": "navilink",
+
+  NaviTap: "navitap",
+
+  "Risk Management Portal": "risk-portal",
+};
+
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function getProjectStatus(
+  result: string,
+  liveUrl: string | null,
+): ProjectStatus {
+  if (
+    /\b(in development|under development|still developing|currently developing|work in progress|ongoing)\b/i.test(
+      result,
+    )
+  ) {
+    return "In development";
+  }
+
+  if (liveUrl) {
+    return "Live";
+  }
+
+  return "Prototype";
+}
+
+/* =========================================
+   CONVERT CASE STUDIES TO PROJECTS
+   ========================================= */
+
+/**
+ * Case studies are the single source of truth for project data.
+ *
+ * Confidential case studies are excluded from the public portfolio.
+ * IDs are kept stable using explicit overrides where available.
+ */
+function createPublicCaseStudyProjects(): PortfolioProject[] {
+  const usedIds = new Set<string>();
+
+  return caseStudies
+    .filter((study) => !study.confidential)
+    .map((study) => {
+      const baseId =
+        PROJECT_ID_OVERRIDES[study.title] ?? slugify(study.title);
+
+      let id = baseId;
+      let suffix = 2;
+
+      while (usedIds.has(id)) {
+        id = `${baseId}-${suffix}`;
+        suffix += 1;
+      }
+
+      usedIds.add(id);
+
+      return {
+        id,
+        name: study.title,
+        subtitle: study.subtitle,
+        category: study.type.join(" / "),
+        summary: study.result,
+        businessProblem: study.problem,
+        solution: study.solution,
+        result: study.result,
+        technologies: [...study.tech],
+        image: study.images[0] ?? "",
+        images: [...study.images],
+        githubUrl: study.repo,
+        liveUrl: study.live,
+        status: getProjectStatus(study.result, study.live),
+        confidential: study.confidential ?? false,
+        type: [...study.type],
+      };
+    });
+}
+
+/* =========================================
+   PUBLIC PROJECTS
+   ========================================= */
+
+const publicCaseStudyProjects = createPublicCaseStudyProjects();
+
+export const projects: PortfolioProject[] = [...publicCaseStudyProjects];
+
+export const publicProjects = projects;
+
+/* =========================================
+   SKILLS
+   ========================================= */
 
 export const skillGroups: SkillGroup[] = [
   {
@@ -177,12 +217,7 @@ export const skillGroups: SkillGroup[] = [
   {
     category: "Databases",
     description: "Relational data modeling and persistence.",
-    skills: [
-      "PostgreSQL",
-      "SQL",
-      "Supabase",
-      "Database Migrations",
-    ],
+    skills: ["PostgreSQL", "SQL", "Supabase", "Database Migrations"],
   },
   {
     category: "Frontend Development",
@@ -209,23 +244,18 @@ export const skillGroups: SkillGroup[] = [
   {
     category: "Mobile & Spatial",
     description: "Mobile experiences and interactive navigation concepts.",
-    skills: [
-      "React Native",
-      "Expo",
-      "SVG Maps",
-      "Interactive Navigation",
-    ],
+    skills: ["React Native", "Expo", "SVG Maps", "Interactive Navigation"],
   },
   {
     category: "AI Exploration",
     description: "Exploring AI-assisted applications and integrations.",
-    skills: [
-      "AI APIs",
-      "AI Integrations",
-      "Knowledge-Based Assistants",
-    ],
+    skills: ["AI APIs", "AI Integrations", "Knowledge-Based Assistants"],
   },
 ];
+
+/* =========================================
+   MAIN WORLD LOCATIONS
+   ========================================= */
 
 export const locations: PortfolioLocation[] = [
   {
@@ -245,7 +275,7 @@ export const locations: PortfolioLocation[] = [
     shortTitle: "Projects",
     description: "Real problems, practical solutions, and software in progress.",
     detail:
-      "Explore selected projects and the problems each one is designed to solve.",
+      "Explore the public case studies, the problems they address, their solutions, technologies, and results.",
     projects,
     position: [-1, -1],
     color: "#19f58a",
@@ -257,7 +287,7 @@ export const locations: PortfolioLocation[] = [
     shortTitle: "About Me",
     description: "A software engineer who enjoys building and learning.",
     detail:
-      "I'm JP, a software engineer with a practical, project-driven approach to learning and development.\n\nMy work focuses on backend systems, Python automation, API development, database integration, and web and mobile applications. I like breaking complex problems into manageable components and improving the structure, reliability, and maintainability of software.\n\nI'm also exploring how to build AI systems that can work with my own knowledge sources and become more useful over time.",
+      "I'm JP, a software engineer with a practical, project-driven approach to learning and development.\n\nMy work focuses on backend systems, Python automation, API development, database integration, and web and mobile applications. I enjoy breaking complex problems into manageable components and improving software structure, reliability, and maintainability.\n\nI'm also exploring AI systems that can work with my own knowledge sources and become more useful over time.",
     position: [2, -2],
     color: "#a4ffce",
     kind: "about",
@@ -268,7 +298,7 @@ export const locations: PortfolioLocation[] = [
     shortTitle: "Skills",
     description: "My development toolkit, organized by engineering discipline.",
     detail:
-      "A collection of technologies and tools I use or am actively exploring through hands-on projects.",
+      "Explore my technical skills by category, from backend engineering and databases to frontend development and automation.",
     skills: skillGroups,
     position: [1, 1],
     color: "#19f58a",
@@ -280,7 +310,7 @@ export const locations: PortfolioLocation[] = [
     shortTitle: "Experience",
     description: "From analysis and automation toward software engineering.",
     detail:
-      "My development journey has involved analytical work, automation, backend development, and building full-stack applications.\n\nI have worked on Python automation workflows, API integrations, database-backed applications, and systems with authentication and role-based access.\n\nMy current learning focus is strengthening independent software design, backend architecture, system reliability, and AI engineering through hands-on projects.\n\nThis section describes my technical journey; specific employers, dates, formal qualifications, and measurable achievements should be added from my verified work history.",
+      "My development journey has involved analytical work, automation, backend development, and building full-stack applications.\n\nI have worked on Python automation workflows, API integrations, database-backed applications, and systems with authentication and role-based access.\n\nMy current learning focus is strengthening independent software design, backend architecture, system reliability, and AI engineering through hands-on projects.",
     position: [3, 1],
     color: "#a4ffce",
     kind: "experience",
@@ -298,24 +328,32 @@ export const locations: PortfolioLocation[] = [
   },
 ];
 
+/* =========================================
+   STORY MESSAGES
+   ========================================= */
+
 export const storyMessages: Record<LocationId, string> = {
   home:
     "Welcome to my world! I'm JP, a software engineer who enjoys turning ideas into working software. Explore the map to discover my projects, skills, and journey.",
+
   projects:
     "You've discovered the Project Lab! Explore the projects, the problems they address, and how each solution is built.",
+
   about:
     "Curious about the developer behind the code? I'm JP. I enjoy solving problems, understanding how systems work, and continuously improving the way I build software.",
+
   skills:
     "Welcome to the Skills Reactor! Explore my toolkit by category, from backend engineering and databases to frontend development and automation.",
+
   experience:
-    "Every project is another step forward. My journey has taken me through analytical work, automation, and software development. I'm continuing to strengthen my engineering skills by building real-world systems.",
+    "Every project is another step forward. My journey includes analytical work, automation, and software development. I'm continuing to strengthen my engineering skills by building real-world systems.",
+
   contact:
     "You've reached the Contact Beacon! Have a project, an opportunity, or an idea you'd like to bring to life? Let's connect and see what we can build together.",
 };
 
-
 /* =========================================
-   ADDITIONAL PROJECT LOCATION CONFIGURATION
+   AUTOMATIC PROJECT ISLANDS
    ========================================= */
 
 export type ProjectLocationConfig = {
@@ -329,67 +367,60 @@ export type ProjectLocationConfig = {
   locked?: boolean;
 };
 
-export const projectLocationConfigs: ProjectLocationConfig[] = [
-  {
-    id: "project-navilink",
-    projectId: "navilink",
-    title: "NaviLink Archive",
-    shortTitle: "NaviLink",
-    description: "A magical archive for organizing useful links.",
-    position: [-5, -4],
-    color: "#19f58a",
-  },
-  {
-    id: "project-naviatlas",
-    projectId: "naviatlas",
-    title: "NaviAtlas Observatory",
-    shortTitle: "NaviAtlas",
-    description: "An ancient observatory for mapping indoor spaces.",
-    position: [-2, -6],
-    color: "#a4ffce",
-  },
-  {
-    id: "project-navitap",
-    projectId: "navitap",
-    title: "NaviTap Trading Post",
-    shortTitle: "NaviTap",
-    description: "A forest trading post connecting businesses and customers.",
-    position: [5, -5],
-    color: "#19f58a",
-  },
-  {
-    id: "project-risk-portal",
-    projectId: "risk-portal",
-    title: "Risk Fortress",
-    shortTitle: "Risk Portal",
-    description: "A fortified outpost for risk monitoring and business systems.",
-    position: [7, 0],
-    color: "#a4ffce",
-  },
-  {
-    id: "project-gobus",
-    projectId: "gobus",
-    title: "GoBus Waystation",
-    shortTitle: "GoBus",
-    description: "A forest waystation for fleet tracking and journey monitoring.",
-    position: [5, 4],
-    color: "#19f58a",
-  },
-];
-
 export type AdditionalProjectLocation = Omit<
   PortfolioLocation,
   "id"
 > & {
   id: `project-${string}`;
+  status: ProjectStatus;
 };
 
-/* =========================================
-   GENERATED PROJECT LOCATIONS
-   ========================================= */
+const ISLAND_COLORS = [
+  "#19f58a",
+  "#a4ffce",
+  "#7dd3fc",
+  "#c4b5fd",
+  "#f9a8d4",
+  "#fcd34d",
+];
 
-// These are additional locations.
-// The original `locations` array remains unchanged.
+const ISLAND_RADIUS_X = 10;
+const ISLAND_RADIUS_Z = 8;
+const ISLAND_START_ANGLE = -Math.PI / 2;
+
+/**
+ * Spread the islands around the central world.
+ * Every public project gets a stable position based on its array index.
+ */
+function getIslandPosition(
+  index: number,
+  total: number,
+): [number, number] {
+  const angle =
+    ISLAND_START_ANGLE +
+    (index / Math.max(total, 1)) * Math.PI * 2;
+
+  return [
+    Number((Math.cos(angle) * ISLAND_RADIUS_X).toFixed(2)),
+    Number((Math.sin(angle) * ISLAND_RADIUS_Z).toFixed(2)),
+  ];
+}
+
+/* Generate island configuration directly from public projects. */
+
+export const projectLocationConfigs: ProjectLocationConfig[] =
+  projects.map((project, index) => ({
+    id: `project-${slugify(project.id)}`,
+    projectId: project.id,
+    title: project.name,
+    shortTitle: project.subtitle,
+    description: project.summary,
+    position: getIslandPosition(index, projects.length),
+    color: ISLAND_COLORS[index % ISLAND_COLORS.length],
+    locked: false,
+  }));
+
+/* Generate the actual map locations from the configuration. */
 
 export const additionalProjectLocations: AdditionalProjectLocation[] =
   projectLocationConfigs.flatMap((config) => {
@@ -397,10 +428,7 @@ export const additionalProjectLocations: AdditionalProjectLocation[] =
       (item) => item.id === config.projectId,
     );
 
-    // Ignore invalid project IDs rather than creating broken locations.
-    if (!project) {
-      return [];
-    }
+    if (!project) return [];
 
     return [
       {
@@ -408,12 +436,28 @@ export const additionalProjectLocations: AdditionalProjectLocation[] =
         title: config.title,
         shortTitle: config.shortTitle,
         description: config.description,
-        detail: `${project.businessProblem}\n\n${project.solution}`,
+        detail: [
+          project.businessProblem,
+          project.solution,
+          project.result,
+        ].join("\n\n"),
         position: config.position,
         color: config.color,
         kind: "project",
         locked: config.locked ?? false,
         projects: [project],
+        status: project.status,
       },
     ];
   });
+
+/* Combined collection for map renderers that need every location. */
+
+export type WorldLocation =
+  | PortfolioLocation
+  | AdditionalProjectLocation;
+
+export const allWorldLocations: WorldLocation[] = [
+  ...locations,
+  ...additionalProjectLocations,
+];

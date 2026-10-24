@@ -162,7 +162,23 @@ export default function DetailPopup({
             <main className="relative z-10 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
               <div className="space-y-4 p-3 sm:space-y-5 sm:p-5 lg:p-6">
                 {/* Hero */}
-                <section className="relative isolate overflow-hidden rounded-2xl border border-emerald-300/20 bg-[#061810]/90 sm:rounded-3xl">
+                <div className="mb-5 flex items-start justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="h-8 w-1.5 shrink-0 rounded-full bg-gray-200" />
+
+                    <div>
+                      <h3 className="text-sm font-black tracking-[0.13em] text-emerald-400">
+                        What I Offer
+                      </h3>
+
+                      <p className="mt-1 text-xs text-slate-400">
+                        Turning ideas into practical, reliable, and scalable
+                        solutions
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <section className="relative isolate overflow-hidden rounded-md border border-emerald-300/20 bg-[#061810]/90">
                   <div
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -172,63 +188,9 @@ export default function DetailPopup({
                     <div className="absolute right-0 top-0 h-full w-1/3 skew-x-[-38deg] border-l border-emerald-400/10 bg-emerald-400/[0.025]" />
                   </div>
 
-                  <div className="relative grid grid-cols-1 sm:grid-cols-[1fr_0.85fr]">
-                    {/* Hero copy */}
-                    <div className="relative z-10 flex min-w-0 flex-col justify-center p-5 pb-1 sm:p-6 sm:pb-7 lg:p-7">
-                      <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-400/35 bg-emerald-400/[0.08] px-3 py-2 text-[10px] font-extrabold tracking-[0.14em] text-emerald-300 sm:text-xs">
-                        <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
-                        LOCATION {String(index).padStart(2, "0")}
-                      </div>
-
-                      <div className="mt-5 flex items-start gap-3">
-                        <div className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-400 sm:size-12">
-                          <Icon size={24} />
-                        </div>
-
-                        <div className="min-w-0">
-                          <h1
-                            id="detail-popup-title"
-                            className="break-words text-2xl font-black leading-tight tracking-tight sm:text-3xl"
-                          >
-                            {location.title}
-                          </h1>
-
-                          <p className="mt-2 text-sm font-medium leading-6 text-emerald-50/60">
-                            {location.description}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-5 hidden h-px w-full bg-gradient-to-r from-emerald-400/40 to-transparent sm:block" />
-
-                      <p className="mt-4 hidden max-w-sm text-sm leading-6 text-white/45 sm:block">
-                        Building software, automation, and AI-powered tools to
-                        solve practical problems.
-                      </p>
-                    </div>
-
-                    {/* Mascot */}
-                    <div className="relative -mt-1 flex h-44 items-end justify-center overflow-hidden sm:mt-0 sm:h-64 lg:h-72">
-                      <div
-                        aria-hidden="true"
-                        className="absolute bottom-0 left-1/2 h-32 w-48 -translate-x-1/2 rounded-full bg-emerald-400/15 blur-[55px] sm:h-48 sm:w-56"
-                      />
-
-                      <motion.img
-                        key={location.id}
-                        src={mascot}
-                        alt="JP mascot"
-                        draggable={false}
-                        className="relative z-10 -mb-10 h-full max-w-full object-contain object-bottom drop-shadow-[0_12px_25px_rgba(0,0,0,0.4)] sm:absolute sm:bottom-0 sm:h-[112%] sm:max-w-none"
-                        initial={{ opacity: 0, y: 18 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.12, duration: 0.45 }}
-                      />
-                    </div>
-                  </div>
-
                   {/* Capabilities */}
-                  <div className="relative z-10 grid grid-cols-2 gap-2 px-3 pb-3 sm:gap-3 sm:px-5 sm:pb-5">
+
+                  <div className="relative z-10 grid grid-cols-2 gap-2 p-3 sm:gap-3">
                     {capabilities.map(
                       ({ label, detail, Icon: CapabilityIcon }, i) => (
                         <motion.div
@@ -236,9 +198,9 @@ export default function DetailPopup({
                           initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.08 * i, duration: 0.3 }}
-                          className="flex min-w-0 items-center gap-2 rounded-xl border border-emerald-300/15 bg-[#06140f]/80 p-2.5 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/[0.05] sm:gap-3 sm:p-3"
+                          className="flex min-w-0 items-center gap-2 rounded-md border border-emerald-300/15 bg-[#06140f]/80 p-2.5 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/[0.05] sm:gap-3 sm:p-3"
                         >
-                          <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/[0.07] text-emerald-400 sm:size-10">
+                          <div className="flex size-9 shrink-0 items-center justify-center rounded-md border border-emerald-400/30 bg-emerald-400/[0.07] text-emerald-400 sm:size-10">
                             <CapabilityIcon size={19} />
                           </div>
 
@@ -257,10 +219,10 @@ export default function DetailPopup({
                 </section>
 
                 {/* Dynamic section content */}
-                <section className="rounded-2xl border border-emerald-300/20 bg-[#06140f]/75 p-4 sm:rounded-3xl sm:p-6">
+                <section className="rounded-2xl bg-[#06140f]/75 sm:rounded-3xl">
                   <div className="mb-5 flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="h-8 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                      <div className="h-8 w-1.5 shrink-0 rounded-full bg-gray-200" />
 
                       <div>
                         <h3 className="text-sm font-black tracking-[0.13em] text-emerald-400">
@@ -282,12 +244,6 @@ export default function DetailPopup({
                         </p>
                       </div>
                     </div>
-
-                    <span className="shrink-0 pt-1 text-[10px] font-bold tracking-[0.18em] text-white/40">
-                      {String(index).padStart(2, "0")}
-                      <span className="mx-1.5 text-emerald-400/50">/</span>
-                      {String(totalLocations).padStart(2, "0")}
-                    </span>
                   </div>
 
                   {isSkillsLocation && location.skills ? (
@@ -300,7 +256,7 @@ export default function DetailPopup({
                         {location.detail}
                       </p>
 
-                      <div className="mt-5 flex items-center gap-3 sm:gap-4">
+                      {/* <div className="mt-5 flex items-center gap-3 sm:gap-4">
                         <div className="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-emerald-400 text-emerald-400 sm:size-12">
                           <Navigation size={22} />
                         </div>
@@ -309,7 +265,7 @@ export default function DetailPopup({
                           Explore my projects, technical skills, and development
                           journey.
                         </p>
-                      </div>
+                      </div> */}
                     </div>
                   )}
                 </section>
@@ -340,7 +296,7 @@ export default function DetailPopup({
                 </section>
 
                 {/* Primary CTA */}
-                <button
+                {/* <button
                   type="button"
                   onClick={onAskJP}
                   className="group flex min-h-14 w-full items-center justify-center gap-3 rounded-xl border border-emerald-300/30 bg-emerald-400 px-5 py-4 text-sm font-black text-[#032017] transition-colors hover:bg-emerald-300 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04110d] sm:min-h-16 sm:text-base"
@@ -351,38 +307,16 @@ export default function DetailPopup({
                     size={22}
                     className="transition-transform group-hover:translate-x-1"
                   />
-                </button>
+                </button> */}
 
                 {/* Progress */}
                 <div className="px-2 pb-3 pt-1 sm:px-3">
-                  <div className="mb-3 flex items-center justify-between gap-3 text-[10px] font-bold tracking-[0.14em] text-white/35 sm:text-xs sm:tracking-[0.18em]">
-                    <span>PORTFOLIO PROGRESS</span>
-                    <span className="text-emerald-300">
-                      {Math.round(progress)}%
-                    </span>
-                  </div>
-
-                  <div
-                    className="h-1 overflow-hidden rounded-full bg-white/10"
-                    role="progressbar"
-                    aria-valuenow={Math.round(progress)}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-label="Portfolio progress"
-                  >
-                    <motion.div
-                      className="h-full rounded-full bg-emerald-400"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ duration: 0.5 }}
-                    />
-                  </div>
-
+                  
                   <div className="mt-5 flex items-center justify-center gap-2 pb-1 text-xs text-slate-500">
                     <span className="h-px w-4 bg-emerald-500/60" />
-                    <span>Powered by</span>
+                    <span>Created by</span>
                     <span className="font-extrabold tracking-tight text-slate-400">
-                      ◈ Netlify
+                      ◈ JP QUINTANA
                     </span>
                   </div>
                 </div>

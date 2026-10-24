@@ -1,21 +1,43 @@
 import { useMemo } from "react";
+
 import { ProjectIslandNPCs } from "../../FantasyNPCs";
+import WorldTravelNPCs from "../../WorldTravelNPCs";
+
 import { additionalProjectLocations } from "../../../../data/locations";
 
 import Bridge from "./Bridge";
 import HubIsland from "./HubIsland";
-import MiniCity from "./MiniCity";
+import ProjectCity from "./ProjectCity";
 import { getBridgeEndpoints } from "./getBridgeEndpoints";
 
 import {
   HUB_POSITION,
   HUB_RADIUS,
-  ISLAND_RADIUS,
-  MIN_CITY_SPACING,
   VILLAGE_CONNECTION,
 } from "./constants";
 
-import type { FloatingProjectCityProps, Point3 } from "./types";
+import type {
+  FloatingProjectCityProps,
+  Point3,
+} from "./types";
+
+/**
+ * The project city is one complete destination.
+ *
+ * X: horizontal world offset from the hub.
+ * Y: vertical world offset from the hub.
+ * Z: forward world offset from the hub.
+ */
+const CITY_OFFSET: Point3 = [1.5, 0, 13];
+
+/**
+ * Approximate distance from the city center to the bridge entrance.
+ *
+ * IMPORTANT:
+ * This value must match the actual edge of ProjectCity's terrain.
+ * Update it if you change the terrain dimensions.
+ */
+const CITY_BRIDGE_RADIUS = 3.5;
 
 export default function FloatingProjectCity({
   selectedId,
@@ -23,93 +45,108 @@ export default function FloatingProjectCity({
 }: FloatingProjectCityProps) {
   const projectLocations = additionalProjectLocations;
 
-  const projectPositions = useMemo<Point3[]>(() => {
-    const count = projectLocations.length;
-
-    if (count === 0) return [];
-
-    const radius = Math.max(
-      MIN_CITY_SPACING,
-      count > 2 ? 2.8 / Math.sin(Math.PI / count) : MIN_CITY_SPACING,
-    );
-
-    const connectionAngle = Math.atan2(
-      VILLAGE_CONNECTION[2] - HUB_POSITION[2],
-      VILLAGE_CONNECTION[0] - HUB_POSITION[0],
-    );
-
-    const startAngle = connectionAngle + Math.PI / count;
-
-    return projectLocations.map((location, index) => {
-      const angle = startAngle + (index / count) * Math.PI * 2;
-
-      // Use the configured project position as the island's X/Z layout.
-      // The configuration uses 2D coordinates: [x, z].
-      const configuredPosition = location.position;
-
-      return [
-        HUB_POSITION[0] +
-          Math.cos(angle) * radius +
-          configuredPosition[0] * 0.15,
-        HUB_POSITION[1] + Math.sin(index * 1.7) * 0.22,
-        HUB_POSITION[2] +
-          Math.sin(angle) * radius +
-          configuredPosition[1] * 0.15,
-      ];
-    });
-  }, [projectLocations]);
-
-  const mainBridge = useMemo(
-    () => getBridgeEndpoints(VILLAGE_CONNECTION, HUB_POSITION, 0, HUB_RADIUS),
+  /**
+   * Calculate the city's world position once.
+   *
+   * ProjectCity itself should use local coordinates, because its
+   * parent group applies this world offset.
+   */
+  const cityPosition = useMemo<Point3>(
+    () => [
+      HUB_POSITION[0] + CITY_OFFSET[0],
+      HUB_POSITION[1] + CITY_OFFSET[1],
+      HUB_POSITION[2] + CITY_OFFSET[2],
+    ],
     [],
   );
 
+  /**
+   * Existing village-to-hub bridge.
+   * Keep the current connection unchanged.
+   */
+  const mainBridge = useMemo(
+    () =>
+      getBridgeEndpoints(
+        VILLAGE_CONNECTION,
+        HUB_POSITION,
+        0,
+        HUB_RADIUS,
+      ),
+    [],
+  );
+
+  /**
+   * One bridge connects the hub to the entire project city.
+   */
+  const cityBridge = useMemo(
+    () =>
+      getBridgeEndpoints(
+        HUB_POSITION,
+        cityPosition,
+        HUB_RADIUS,
+        CITY_BRIDGE_RADIUS,
+      ),
+    [cityPosition],
+  );
+
+  /**
+   * The entire project city is one NPC destination.
+   * Individual project landmarks remain inside ProjectCity.
+   */
+  const projectPositions = useMemo<Point3[]>(
+    () => [cityPosition],
+    [cityPosition],
+  );
+
+  /**
+   * World travel uses the same bridge that is rendered visually.
+   */
+  const islandBridges = useMemo(
+    () => [cityBridge],
+    [cityBridge],
+  );
+
   return (
-    <group name="floating-project-city">
-      {/* Connect the main village to the central hub */}
-      {projectLocations.length > 0 && (
-        <Bridge
-          start={mainBridge.start}
-          end={mainBridge.end}
-          label="Project Bridge"
-        />
-      )}
+    <group name="floating-project-world">
+      {/* Existing village entrance bridge */}
+      <Bridge
+        start={mainBridge.start}
+        end={mainBridge.end}
+        label="Village Bridge"
+      />
 
-      {/* Connect the central hub to each configured project island */}
-      {projectPositions.map((position, index) => {
-        const location = projectLocations[index];
+      {/* Single hub-to-city bridge */}
+      <Bridge
+        start={cityBridge.start}
+        end={cityBridge.end}
+        label="Project City Bridge"
+      />
 
-        const endpoints = getBridgeEndpoints(
-          HUB_POSITION,
-          position,
-          HUB_RADIUS,
-          ISLAND_RADIUS,
-        );
-
-        return (
-          <Bridge
-            key={`hub-bridge-${location.id}`}
-            start={endpoints.start}
-            end={endpoints.end}
-          />
-        );
-      })}
-
-      {/* Render each configured project as an independent island */}
-      {projectLocations.map((location, index) => (
-        <MiniCity
-          key={location.id}
-          location={location}
-          index={index}
-          position={projectPositions[index]}
-          selected={location.id === selectedId}
+      {/* Entire project city: forest surface, tiles, landmarks and rocky underside */}
+      <group
+        name="project-city"
+        position={cityPosition}
+      >
+        <ProjectCity
+          locations={projectLocations}
+          selectedId={selectedId}
           onSelect={onSelect}
         />
-      ))}
+      </group>
 
-      {/* NPCs patrol on their corresponding project islands */}
-      <ProjectIslandNPCs positions={projectPositions} />
+      {/* Preserve the existing project NPC system */}
+      <ProjectIslandNPCs
+        positions={projectPositions}
+      />
 
+      {/* Preserve the existing world-travel NPC system */}
+      <WorldTravelNPCs
+        projectPositions={projectPositions}
+        mainBridge={mainBridge}
+        islandBridges={islandBridges}
+      />
+
+      {/* Existing central hub */}
       <HubIsland />
     </group>
   );
