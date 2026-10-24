@@ -19,7 +19,7 @@ const BASE_HEIGHT = 0.14 * SIZE;
 const WALL_HEIGHT = 0.43 * SIZE;
 
 const WOOD = "#59432e";
-const WOOD_LIGHT = "#786044";
+// const WOOD_LIGHT = "#786044";
 const STONE = "#66705b";
 const MOSS = "#347344";
 const MOSS_DARK = "#245b32";

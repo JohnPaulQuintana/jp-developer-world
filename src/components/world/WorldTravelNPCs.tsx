@@ -10,7 +10,7 @@ import type { getBridgeEndpoints } from "./extended/FloatingProjectCity/getBridg
 import {
   HUB_POSITION,
   HUB_RADIUS,
-  VILLAGE_CONNECTION,
+  // VILLAGE_CONNECTION,
 } from "./extended/FloatingProjectCity/constants";
 
 type BridgeEndpoints = ReturnType<typeof getBridgeEndpoints>;
