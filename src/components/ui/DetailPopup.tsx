@@ -2,35 +2,35 @@ import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
-  BriefcaseBusiness,
+  // BriefcaseBusiness,
   Code2,
   Cpu,
-  House,
-  Mail,
+  // House,
+  // Mail,
   Navigation,
   Sparkles,
-  UserRound,
-  Wrench,
+  // UserRound,
+  // Wrench,
   X,
   Settings2,
   Box,
 } from "lucide-react";
 
-import mascot from "../../assets/hello.png";
-import type { LocationId } from "../../data/locations";
+// import mascot from "../../assets/hello.png";
+// import type { LocationId } from "../../data/locations";
 
 import SkillsSection from "./SkillsSection";
 import ProjectsSection from "./ProjectsSection";
 import type { CityLocation } from "../world/extended/FloatingProjectCity/types";
 
-const iconMap = {
-  home: House,
-  projects: Code2,
-  about: UserRound,
-  skills: Wrench,
-  experience: BriefcaseBusiness,
-  contact: Mail,
-} satisfies Record<LocationId, typeof House>;
+// const iconMap = {
+//   home: House,
+//   projects: Code2,
+//   about: UserRound,
+//   skills: Wrench,
+//   experience: BriefcaseBusiness,
+//   contact: Mail,
+// } satisfies Record<LocationId, typeof House>;
 
 type DetailPopupProps = {
   location: CityLocation;
@@ -54,22 +54,8 @@ export default function DetailPopup({
   onClose,
   onAskJP,
 }: DetailPopupProps) {
-  // const Icon = iconMap[location.id];
-  const Icon =
-    location.id in iconMap
-      ? iconMap[location.id as keyof typeof iconMap]
-      : iconMap.projects;
 
-  const locationIndex = locations.findIndex((item) => item.id === location.id);
-
-  const index = locationIndex >= 0 ? locationIndex + 1 : 1;
-  const totalLocations = locations.length;
-
-  const progress =
-    totalLocations > 0
-      ? (Math.min(index, totalLocations) / totalLocations) * 100
-      : 0;
-
+  console.log(locations)
   const isProjectLocation =
     location.kind === "project" && Boolean(location.projects?.length);
 
