@@ -1,4 +1,4 @@
-import { Billboard, Text } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import { MathUtils, type Group } from "three";
 import { useRef, type ReactNode } from "react";
@@ -88,6 +88,25 @@ const woodLight = "#786044";
 const moss = "#347344";
 const mossDark = "#245b32";
 const stone = "#66705b";
+
+const getBuildingLabelId = (id: string): string => {
+  let hash = 0;
+
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) | 0;
+  }
+
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let value = Math.abs(hash);
+  let result = "";
+
+  for (let i = 0; i < 3; i++) {
+    result += chars[value % chars.length];
+    value = Math.floor(value / chars.length) + i * 17 + 1;
+  }
+
+  return result;
+};
 
 function TimberPost({
   position,
@@ -1223,6 +1242,8 @@ export default function Building({
     onSelect();
   };
 
+  const labelId = getBuildingLabelId(String(location.id));
+
   return (
     <group
       position={[location.position[0], GROUND_Y, location.position[1]]}
@@ -1355,88 +1376,126 @@ export default function Building({
         )}
       </group>
 
-      {/* Forest navigation nameplate */}
-      <Billboard position={[0, roofBaseY + 0.78 * size, 0]} follow>
-        {/* Soft shadow */}
-        <mesh position={[0.018, -0.018, -0.045]} renderOrder={998}>
-          <planeGeometry args={[1.12, 0.31]} />
-          <meshBasicMaterial
-            color="#07130b"
-            transparent
-            opacity={0.55}
-            depthTest={false}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* Outer wooden trim */}
-        <mesh position={[0, 0, -0.035]} renderOrder={999}>
-          <planeGeometry args={[1.12, 0.31]} />
-          <meshBasicMaterial
-            color={active ? "#4a8750" : "#514532"}
-            depthTest={false}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* Main plaque */}
-        <mesh position={[0, 0, -0.025]} renderOrder={1000}>
-          <planeGeometry args={[1.085, 0.275]} />
-          <meshBasicMaterial
-            color={active ? "#234b30" : "#142c20"}
-            depthTest={false}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* Inner green surface */}
-        <mesh position={[0, 0, -0.015]} renderOrder={1001}>
-          <planeGeometry args={[1.045, 0.235]} />
-          <meshBasicMaterial
-            color={active ? "#285638" : "#193625"}
-            depthTest={false}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* Emerald status marker */}
-        <mesh position={[-0.405, 0, 0.005]} renderOrder={1002}>
-          <circleGeometry args={[active ? 0.034 : 0.027, 16]} />
-          <meshBasicMaterial
-            color={active ? "#a1f5ae" : "#4d9a5d"}
-            depthTest={false}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* Small green divider */}
-        <mesh position={[-0.355, 0, 0.005]} renderOrder={1002}>
-          <planeGeometry args={[0.012, 0.105]} />
-          <meshBasicMaterial
-            color={active ? "#a1e9a8" : "#426b38"}
-            depthTest={false}
-            depthWrite={false}
-          />
-        </mesh>
-
-        {/* Location name */}
-        <Text
-          position={[0.045, 0, 0.012]}
-          fontSize={0.105}
-          maxWidth={0.78}
-          textAlign="center"
-          anchorX="center"
-          anchorY="middle"
-          color={active ? "#f5e7bf" : "#e3e8d8"}
-          outlineWidth={0.0015}
-          outlineColor="#102016"
-          renderOrder={1003}
-          material-depthTest={false}
-          material-depthWrite={false}
+      {/* Compact HTML forest navigation nameplate */}
+      <Html
+        position={[0, roofBaseY + 0.78 * size, 0]}
+        center
+        zIndexRange={[20, 0]}
+        style={{
+          pointerEvents: "none",
+          userSelect: "none",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "3px",
+            padding: "4px 7px 5px",
+            minWidth: "64px",
+            boxSizing: "border-box",
+            border: active
+              ? "1px solid rgba(25, 245, 138, 0.5)"
+              : "1px solid rgba(145, 165, 156, 0.22)",
+            borderRadius: "3px",
+            background: "rgba(6, 17, 13, 0.94)",
+            boxShadow: active
+              ? "0 0 7px rgba(25, 245, 138, 0.12)"
+              : "0 2px 5px rgba(0, 0, 0, 0.2)",
+          }}
         >
-          {location.shortTitle}
-        </Text>
-      </Billboard>
+          {/* Random-looking building identifier */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "4px",
+            }}
+          >
+            <span
+              style={{
+                width: "8px",
+                height: "1px",
+                background: "rgba(25, 245, 138, 0.5)",
+              }}
+            />
+
+            <span
+              style={{
+                color: "#19f58a",
+                fontSize: "6px",
+                fontWeight: 700,
+                letterSpacing: "1px",
+                lineHeight: 1,
+              }}
+            >
+              #{labelId}
+            </span>
+
+            <span
+              style={{
+                width: "8px",
+                height: "1px",
+                background: "rgba(25, 245, 138, 0.5)",
+              }}
+            />
+          </div>
+
+          {/* Building name */}
+          <span
+            style={{
+              color: active ? "#f0f5f0" : "#cbd8ce",
+              fontSize: "5px",
+              fontWeight: 600,
+              letterSpacing: "0.5px",
+              lineHeight: 1.2,
+              textAlign: "center",
+              textTransform: "uppercase",
+              textShadow: "0 1px 3px rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            {location.shortTitle}
+          </span>
+
+          {/* Minimal emerald accent */}
+          {/* <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "3px",
+            }}
+          >
+            <span
+              style={{
+                width: "3px",
+                height: "3px",
+                borderRadius: "50%",
+                background: "#19f58a",
+              }}
+            />
+
+            <span
+              style={{
+                width: "14px",
+                height: "1px",
+                background: "rgba(25, 245, 138, 0.35)",
+              }}
+            />
+
+            <span
+              style={{
+                width: "3px",
+                height: "3px",
+                borderRadius: "50%",
+                background: "#19f58a",
+              }}
+            />
+          </div> */}
+        </div>
+      </Html>
     </group>
   );
 }
