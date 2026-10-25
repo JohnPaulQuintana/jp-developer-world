@@ -124,16 +124,16 @@ export default function DetailPopup({
               <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-400 sm:size-12">
                 {/* <Sparkles size={23} /> */}
                 <img
-                src={me}
-                alt="JP Quintana profile"
-                className="size-full rounded-xl object-cover object-center"
-                style={{
-                  imageRendering: "auto",
-                  backfaceVisibility: "hidden",
-                  transform: "translateZ(0)",
-                }}
-                draggable={false}
-              />
+                  src={me}
+                  alt="JP Quintana profile"
+                  className="size-full rounded-xl object-cover object-center"
+                  style={{
+                    imageRendering: "auto",
+                    backfaceVisibility: "hidden",
+                    transform: "translateZ(0)",
+                  }}
+                  draggable={false}
+                />
               </div>
 
               <div className="min-w-0 flex-1">
@@ -159,36 +159,37 @@ export default function DetailPopup({
             {/* Scrollable content */}
             <main className="relative z-10 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
               <div className="space-y-4 p-3 sm:space-y-5 sm:p-5 lg:p-6">
-                
-{/* Hero with static mascot */}
-<div className="relative flex min-h-[120px] items-center overflow-visible rounded-xl border border-emerald-300/15 bg-[#071a11] px-4 py-4 sm:min-h-[140px] sm:px-5">
-  <div className="relative z-10 min-w-0 flex-1 pr-20 sm:pr-24">
-    <div className="mb-2 flex items-center gap-2">
-      <span className="h-5 w-1 rounded-full bg-emerald-400" />
+                {/* Hero with mascot behind text */}
+                <div className="relative flex min-h-[120px] items-center overflow-visible rounded-xl border border-emerald-300/15 bg-[#071a11] px-4 py-4 sm:min-h-[140px] sm:px-5">
+                  {/* Background decoration */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-0 top-0 z-0 size-32 rounded-full bg-emerald-400/[0.08] blur-3xl"
+                  />
 
-      <h3 className="text-xs font-black uppercase tracking-[0.15em] text-emerald-400 sm:text-sm">
-        What I Offer
-      </h3>
-    </div>
+                  {/* Mascot behind the text */}
+                  <img
+                    src={mascot}
+                    alt="JP's portfolio mascot"
+                    className="pointer-events-none absolute bottom-0 right-2 z-0 h-[110px] w-[100px] object-contain object-bottom opacity-80 sm:right-4 sm:h-[130px] sm:w-[120px]"
+                  />
 
-    <p className="max-w-[280px] text-xs leading-5 text-slate-300 sm:text-sm sm:leading-6">
-      Turning ideas into practical, reliable, and scalable solutions.
-    </p>
-  </div>
+                  {/* Text in front */}
+                  <div className="relative z-10 min-w-0 flex-1 pr-20 sm:pr-24">
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="h-5 w-1 rounded-full bg-emerald-400" />
 
-  {/* Static mascot aligned with the bottom border */}
-  <img
-    src={mascot}
-    alt="JP's portfolio mascot"
-    className="pointer-events-none absolute bottom-0 right-2 z-20 h-[110px] w-[100px] object-contain object-bottom sm:right-4 sm:h-[130px] sm:w-[120px]"
-  />
+                      <h3 className="text-xs font-black uppercase tracking-[0.15em] text-emerald-400 sm:text-sm">
+                        What I Offer
+                      </h3>
+                    </div>
 
-  {/* Background decoration */}
-  <div
-    aria-hidden="true"
-    className="pointer-events-none absolute right-0 top-0 size-32 rounded-full bg-emerald-400/[0.08] blur-3xl"
-  />
-</div>
+                    <p className="max-w-[280px] text-xs leading-5 text-slate-300 sm:text-sm sm:leading-6">
+                      Turning ideas into practical, reliable, and scalable
+                      solutions.
+                    </p>
+                  </div>
+                </div>
 
                 <section className="relative isolate overflow-hidden rounded-md border border-emerald-300/20 bg-[#061810]/90">
                   <div
