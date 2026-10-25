@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
 import World from "./components/world/World";
@@ -21,22 +21,38 @@ import {
 
 import type { CityLocation } from "./components/world/extended/FloatingProjectCity/types";
 
+const LOADER_DELAY_MS = 2000;
+
 export default function App() {
-  const [selected, setSelected] =
-    useState<CityLocation>(locations[0]);
+  const [selected, setSelected] = useState<CityLocation>(locations[0]);
 
   const [dialogueOpen, setDialogueOpen] = useState(true);
   const [showDetails, setShowDetails] = useState(true);
 
   const [isWorldLoading, setIsWorldLoading] = useState(true);
+  const [worldIsReady, setWorldIsReady] = useState(false);
+
   const [showDevelopmentNote, setShowDevelopmentNote] = useState(false);
   const [hasEntered, setHasEntered] = useState(false);
 
+  // Wait until the 3D world is ready before starting the loader delay.
   const handleWorldReady = () => {
-    setIsWorldLoading(false);
-    setShowDevelopmentNote(true);
+    setWorldIsReady(true);
   };
 
+  // Keep the magical loader visible for an additional 2 seconds.
+  useEffect(() => {
+    if (!worldIsReady) return;
+
+    const timer = window.setTimeout(() => {
+      setIsWorldLoading(false);
+      setShowDevelopmentNote(true);
+    }, LOADER_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [worldIsReady]);
+
+  // Reveal the portfolio after the visitor continues.
   const handleContinue = () => {
     setShowDevelopmentNote(false);
     setHasEntered(true);
@@ -112,10 +128,12 @@ export default function App() {
         </>
       )}
 
-      {/* Initial loading screen */}
+      {/* Magical loading screen with delayed dismissal */}
       <AnimatePresence>
         {isWorldLoading && (
-          <FantasyLoader label="Preparing your portfolio" />
+          <FantasyLoader
+            label="Entering my world of code and creativity"
+          />
         )}
       </AnimatePresence>
 

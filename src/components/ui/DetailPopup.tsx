@@ -16,7 +16,7 @@ import {
   Box,
 } from "lucide-react";
 
-// import mascot from "../../assets/hello.png";
+import mascot from "../../assets/hello.png";
 // import type { LocationId } from "../../data/locations";
 
 import SkillsSection from "./SkillsSection";
@@ -148,23 +148,37 @@ export default function DetailPopup({
             {/* Scrollable content */}
             <main className="relative z-10 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
               <div className="space-y-4 p-3 sm:space-y-5 sm:p-5 lg:p-6">
-                {/* Hero */}
-                <div className="mb-5 flex items-start justify-between gap-3">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="h-8 w-1.5 shrink-0 rounded-full bg-gray-200" />
+                
+{/* Hero with static mascot */}
+<div className="relative flex min-h-[120px] items-center overflow-visible rounded-xl border border-emerald-300/15 bg-[#071a11] px-4 py-4 sm:min-h-[140px] sm:px-5">
+  <div className="relative z-10 min-w-0 flex-1 pr-20 sm:pr-24">
+    <div className="mb-2 flex items-center gap-2">
+      <span className="h-5 w-1 rounded-full bg-emerald-400" />
 
-                    <div>
-                      <h3 className="text-sm font-black tracking-[0.13em] text-emerald-400">
-                        What I Offer
-                      </h3>
+      <h3 className="text-xs font-black uppercase tracking-[0.15em] text-emerald-400 sm:text-sm">
+        What I Offer
+      </h3>
+    </div>
 
-                      <p className="mt-1 text-xs text-slate-400">
-                        Turning ideas into practical, reliable, and scalable
-                        solutions
-                      </p>
-                    </div>
-                  </div>
-                </div>
+    <p className="max-w-[280px] text-xs leading-5 text-slate-300 sm:text-sm sm:leading-6">
+      Turning ideas into practical, reliable, and scalable solutions.
+    </p>
+  </div>
+
+  {/* Static mascot aligned with the bottom border */}
+  <img
+    src={mascot}
+    alt="JP's portfolio mascot"
+    className="pointer-events-none absolute bottom-0 right-2 z-20 h-[110px] w-[100px] object-contain object-bottom sm:right-4 sm:h-[130px] sm:w-[120px]"
+  />
+
+  {/* Background decoration */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute right-0 top-0 size-32 rounded-full bg-emerald-400/[0.08] blur-3xl"
+  />
+</div>
+
                 <section className="relative isolate overflow-hidden rounded-md border border-emerald-300/20 bg-[#061810]/90">
                   <div
                     aria-hidden="true"
