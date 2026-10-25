@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Code2 } from "lucide-react";
+// import { Code2 } from "lucide-react";
 
 type FantasyLoaderProps = {
   label?: string;
@@ -162,14 +162,19 @@ export default function FantasyLoader({
           }}
         />
 
-        <div className="relative flex size-14 items-center justify-center rounded-full border border-emerald-400/20 bg-[#0a1a12]">
-          <Code2 size={25} strokeWidth={1.6} className="text-white" />
+        <div className="relative flex size-14 items-center justify-center overflow-hidden rounded-full border border-emerald-400/20 bg-[#0a1a12]">
+          <img
+            src="/favicon.png"
+            alt="JP Quintana"
+            className="size-9 object-contain"
+            draggable={false}
+          />
         </div>
       </div>
 
       {/* Original loading status */}
       <div className="relative z-10 w-full max-w-xs px-5 text-center">
-        <p className="text-lg font-bold uppercase tracking-[0.25em] text-white sm:text-xl">
+        <p className="text-lg font-extrabold uppercase tracking-[0.25em] text-white sm:text-xl">
           JP QUINTANA
         </p>
 
