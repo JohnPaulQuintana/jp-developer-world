@@ -8,14 +8,14 @@ import {
   // House,
   // Mail,
   Navigation,
-  Sparkles,
+  // Sparkles,
   // UserRound,
   // Wrench,
   X,
   Settings2,
   Box,
 } from "lucide-react";
-
+import me from "../../assets/me.JPG";
 import mascot from "../../assets/hello.png";
 // import type { LocationId } from "../../data/locations";
 
@@ -122,7 +122,18 @@ export default function DetailPopup({
             {/* Header */}
             <header className="relative z-20 flex shrink-0 items-center gap-3 border-b border-emerald-300/15 bg-[#07140f]/95 px-4 py-3.5 sm:px-6 sm:py-5">
               <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-400 sm:size-12">
-                <Sparkles size={23} />
+                {/* <Sparkles size={23} /> */}
+                <img
+                src={me}
+                alt="JP Quintana profile"
+                className="size-full rounded-xl object-cover object-center"
+                style={{
+                  imageRendering: "auto",
+                  backfaceVisibility: "hidden",
+                  transform: "translateZ(0)",
+                }}
+                draggable={false}
+              />
               </div>
 
               <div className="min-w-0 flex-1">
