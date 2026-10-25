@@ -1,4 +1,6 @@
 
+import naviAtlasImage from "../assets/project_images/naviatlas.png";
+
 export interface CaseStudy {
   title: string;
   subtitle: string;
@@ -34,7 +36,7 @@ export const caseStudies: CaseStudy[] = [
       "Astar Algorithm",
       "3D",
     ],
-    images: ["/flow/5.png", "/flow/navi1.PNG", "/flow/6.png"],
+    images: [naviAtlasImage],
     repo: null,
     live: "https://naviatlas.netlify.app/",
   },

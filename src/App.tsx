@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 
 import World from "./components/world/World";
 import Header from "./components/ui/Header";
@@ -9,13 +11,14 @@ import Footer from "./components/ui/Footer";
 import MapHeading from "./components/ui/MapHeading";
 import CameraTools from "./components/ui/CameraTools";
 import FantasyLoader from "./components/ui/FantasyLoader";
+import DevelopmentNote from "./components/ui/DevelopmentNote";
 
 import {
   locations,
   storyMessages,
   type LocationId,
-  // type PortfolioLocation,
 } from "./data/locations";
+
 import type { CityLocation } from "./components/world/extended/FloatingProjectCity/types";
 
 export default function App() {
@@ -24,7 +27,20 @@ export default function App() {
 
   const [dialogueOpen, setDialogueOpen] = useState(true);
   const [showDetails, setShowDetails] = useState(true);
+
   const [isWorldLoading, setIsWorldLoading] = useState(true);
+  const [showDevelopmentNote, setShowDevelopmentNote] = useState(false);
+  const [hasEntered, setHasEntered] = useState(false);
+
+  const handleWorldReady = () => {
+    setIsWorldLoading(false);
+    setShowDevelopmentNote(true);
+  };
+
+  const handleContinue = () => {
+    setShowDevelopmentNote(false);
+    setHasEntered(true);
+  };
 
   const chooseLocation = (location: CityLocation) => {
     setSelected(location);
@@ -46,59 +62,69 @@ export default function App() {
     <main className="app-shell">
       <div className="world-background" />
 
-      {/* 3D world */}
+      {/* Keep the 3D world mounted during loading and the intro note */}
       <div className="scene">
         <World
           selectedId={selected.id as LocationId}
           onSelect={chooseLocation}
           onMascotClick={toggleDialogue}
-          onReady={() => setIsWorldLoading(false)}
+          onReady={handleWorldReady}
         />
       </div>
 
-      {/* Main navigation */}
-      <Header onHome={resetStory} />
+      {/* Reveal portfolio controls after the introduction */}
+      {hasEntered && (
+        <>
+          <Header onHome={resetStory} />
 
-      <Sidebar
-        locations={locations}
-        selectedId={selected.id as LocationId}
-        onSelect={chooseLocation}
-      />
+          <Sidebar
+            locations={locations}
+            selectedId={selected.id as LocationId}
+            onSelect={chooseLocation}
+          />
 
-      {/* Map interface */}
-      <MapHeading />
-      <CameraTools onReset={resetStory} />
+          <MapHeading />
 
-      {/* Selected location details */}
-      <DetailPopup
-        location={selected}
-        locations={locations}
-        visible={showDetails && !isWorldLoading}
-        onClose={() => setShowDetails(false)}
-        onAskJP={() => setDialogueOpen(true)}
-      />
+          <CameraTools onReset={resetStory} />
 
-      {/* JP guide dialogue */}
-      <DialoguePopup
-        selectedId={selected.id as LocationId}
-        message={
-          selected.id in storyMessages
-            ? storyMessages[selected.id as LocationId]
-            : "Welcome to my projects! Explore the islands to discover what I've built."
-        }
-        visible={dialogueOpen && !isWorldLoading}
-        onClose={() => setDialogueOpen(false)}
-        locations={locations}
-        onSelect={chooseLocation}
-      />
+          <DetailPopup
+            location={selected}
+            locations={locations}
+            visible={showDetails}
+            onClose={() => setShowDetails(false)}
+            onAskJP={() => setDialogueOpen(true)}
+          />
 
-      {/* Bottom controls and status */}
-      <Footer location={selected} />
+          <DialoguePopup
+            selectedId={selected.id as LocationId}
+            message={
+              selected.id in storyMessages
+                ? storyMessages[selected.id as LocationId]
+                : "Welcome to my projects! Explore the islands to discover what I've built."
+            }
+            visible={dialogueOpen}
+            onClose={() => setDialogueOpen(false)}
+            locations={locations}
+            onSelect={chooseLocation}
+          />
 
-      {/* Fantasy loading screen */}
-      {isWorldLoading && (
-        <FantasyLoader label="Summoning the world" />
+          <Footer location={selected} />
+        </>
       )}
+
+      {/* Initial loading screen */}
+      <AnimatePresence>
+        {isWorldLoading && (
+          <FantasyLoader label="Preparing your portfolio" />
+        )}
+      </AnimatePresence>
+
+      {/* AI-assisted development disclosure */}
+      <AnimatePresence>
+        {showDevelopmentNote && !isWorldLoading && (
+          <DevelopmentNote onContinue={handleContinue} />
+        )}
+      </AnimatePresence>
     </main>
   );
 }

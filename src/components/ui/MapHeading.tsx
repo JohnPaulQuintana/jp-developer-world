@@ -1,18 +1,24 @@
-import { Sparkles } from "lucide-react";
+// import { Sparkles } from "lucide-react";
+
+
+import { Code2 } from "lucide-react";
 
 export default function MapHeading() {
   return (
     <section className="map-heading">
       <span className="eyebrow">
-        <Sparkles size={13} />
-        A WORLD SHAPED BY CODE
+        <Code2 size={13} />
+        SOFTWARE ENGINEERING PORTFOLIO
       </span>
 
       <h1>
-        The Developer's <span>Realm</span>
+        Building Ideas Into <span>Software</span>
       </h1>
 
-     <p>Explore the projects, skills, and stories behind my journey.</p>
+      <p>
+        Explore my projects, technical skills, and experience in software
+        development, backend engineering, and automation.
+      </p>
     </section>
   );
 }

@@ -1,4 +1,3 @@
-
 import { caseStudies } from "./caseStudies";
 
 /* =========================================
@@ -75,8 +74,7 @@ const PROJECT_ID_OVERRIDES: Record<string, string> = {
   "Construction Warehouse & Project Resource Management Platform (iBodegero)":
     "ibodegero",
 
-  "Public Transit Operations & Passenger Information Platform (GoBus)":
-    "gobus",
+  "Public Transit Operations & Passenger Information Platform (GoBus)": "gobus",
 
   "Global Location Intelligence & Lead Discovery Platform (SpotDeck)":
     "spotdeck",
@@ -152,8 +150,7 @@ function createPublicCaseStudyProjects(): PortfolioProject[] {
   return caseStudies
     .filter((study) => !study.confidential)
     .map((study) => {
-      const baseId =
-        PROJECT_ID_OVERRIDES[study.title] ?? slugify(study.title);
+      const baseId = PROJECT_ID_OVERRIDES[study.title] ?? slugify(study.title);
 
       let id = baseId;
       let suffix = 2;
@@ -260,7 +257,7 @@ export const skillGroups: SkillGroup[] = [
 export const locations: PortfolioLocation[] = [
   {
     id: "home",
-    title: "Developer Spawn Point",
+    title: "Home",
     shortTitle: "Home",
     description: "Building software, automation, and AI-powered tools.",
     detail:
@@ -271,9 +268,10 @@ export const locations: PortfolioLocation[] = [
   },
   {
     id: "projects",
-    title: "Project Lab",
+    title: "Projects & Case Studies",
     shortTitle: "Projects",
-    description: "Real problems, practical solutions, and software in progress.",
+    description:
+      "Real problems, practical solutions, and software in progress.",
     detail:
       "Explore the public case studies, the problems they address, their solutions, technologies, and results.",
     projects,
@@ -283,7 +281,7 @@ export const locations: PortfolioLocation[] = [
   },
   {
     id: "about",
-    title: "About JP",
+    title: "About Me",
     shortTitle: "About Me",
     description: "A software engineer who enjoys building and learning.",
     detail:
@@ -294,7 +292,7 @@ export const locations: PortfolioLocation[] = [
   },
   {
     id: "skills",
-    title: "Skills Reactor",
+    title: "Technical Skills",
     shortTitle: "Skills",
     description: "My development toolkit, organized by engineering discipline.",
     detail:
@@ -304,20 +302,33 @@ export const locations: PortfolioLocation[] = [
     color: "#19f58a",
     kind: "skills",
   },
+
   {
     id: "experience",
-    title: "Engineering Journey",
+    title: "Professional Experience",
     shortTitle: "Experience",
-    description: "From analysis and automation toward software engineering.",
-    detail:
-      "My development journey has involved analytical work, automation, backend development, and building full-stack applications.\n\nI have worked on Python automation workflows, API integrations, database-backed applications, and systems with authentication and role-based access.\n\nMy current learning focus is strengthening independent software design, backend architecture, system reliability, and AI engineering through hands-on projects.",
+    description:
+      "From college freelancing to professional software engineering.",
+    detail: [
+      "A career built through continuous learning, freelance projects, and professional experience in software development, data analysis, and automation.",
+
+      "Freelance Full-Stack Developer | Part-time · Remote | First Year of College – Present",
+      "Started freelancing during my first year of college, accepting client projects, thesis systems, and capstone applications. Progressed into developing web applications, backend APIs, database integrations, and custom software solutions.",
+
+      "Data Analyst — Automation & Software Development | Aurora Holdings | August 2024 – Present",
+      "Started in data analytics with a focus on automation. Expanded into building internal web applications, backend services, APIs, and database-driven tools to improve business workflows and operational efficiency.",
+
+      "Frontend Developer | Sofreg Solutions | November 2025 – April 2026",
+      "Developed and managed client websites and the company website, focusing on responsive user interfaces, website maintenance, and frontend improvements.",
+    ].join("\n\n"),
     position: [3, 1],
     color: "#a4ffce",
     kind: "experience",
   },
+
   {
     id: "contact",
-    title: "Contact Beacon",
+    title: "Contact Me",
     shortTitle: "Contact",
     description: "Have a project, collaboration, or software opportunity?",
     detail:
@@ -334,22 +345,22 @@ export const locations: PortfolioLocation[] = [
 
 export const storyMessages: Record<LocationId, string> = {
   home:
-    "Welcome to my world! I'm JP, a software engineer who enjoys turning ideas into working software. Explore the map to discover my projects, skills, and journey.",
+    "I'm JP, a software engineer focused on backend development, automation, and building practical software solutions.",
 
   projects:
-    "You've discovered the Project Lab! Explore the projects, the problems they address, and how each solution is built.",
+    "Explore my projects, the problems they solve, and the technologies behind each solution.",
 
   about:
-    "Curious about the developer behind the code? I'm JP. I enjoy solving problems, understanding how systems work, and continuously improving the way I build software.",
+    "I'm a software engineer passionate about problem-solving, system design, and continuous learning.",
 
   skills:
-    "Welcome to the Skills Reactor! Explore my toolkit by category, from backend engineering and databases to frontend development and automation.",
+    "Explore my technical skills in backend engineering, frontend development, databases, automation, and AI.",
 
   experience:
-    "Every project is another step forward. My journey includes analytical work, automation, and software development. I'm continuing to strengthen my engineering skills by building real-world systems.",
+    "My experience spans freelance development, frontend engineering, data analytics, and business automation.",
 
   contact:
-    "You've reached the Contact Beacon! Have a project, an opportunity, or an idea you'd like to bring to life? Let's connect and see what we can build together.",
+    "Have a project or opportunity in mind? Let's connect and build something useful together.",
 };
 
 /* =========================================
@@ -367,10 +378,7 @@ export type ProjectLocationConfig = {
   locked?: boolean;
 };
 
-export type AdditionalProjectLocation = Omit<
-  PortfolioLocation,
-  "id"
-> & {
+export type AdditionalProjectLocation = Omit<PortfolioLocation, "id"> & {
   id: `project-${string}`;
   status: ProjectStatus;
 };
@@ -392,13 +400,8 @@ const ISLAND_START_ANGLE = -Math.PI / 2;
  * Spread the islands around the central world.
  * Every public project gets a stable position based on its array index.
  */
-function getIslandPosition(
-  index: number,
-  total: number,
-): [number, number] {
-  const angle =
-    ISLAND_START_ANGLE +
-    (index / Math.max(total, 1)) * Math.PI * 2;
+function getIslandPosition(index: number, total: number): [number, number] {
+  const angle = ISLAND_START_ANGLE + (index / Math.max(total, 1)) * Math.PI * 2;
 
   return [
     Number((Math.cos(angle) * ISLAND_RADIUS_X).toFixed(2)),
@@ -408,8 +411,8 @@ function getIslandPosition(
 
 /* Generate island configuration directly from public projects. */
 
-export const projectLocationConfigs: ProjectLocationConfig[] =
-  projects.map((project, index) => ({
+export const projectLocationConfigs: ProjectLocationConfig[] = projects.map(
+  (project, index) => ({
     id: `project-${slugify(project.id)}`,
     projectId: project.id,
     title: project.name,
@@ -418,15 +421,14 @@ export const projectLocationConfigs: ProjectLocationConfig[] =
     position: getIslandPosition(index, projects.length),
     color: ISLAND_COLORS[index % ISLAND_COLORS.length],
     locked: false,
-  }));
+  }),
+);
 
 /* Generate the actual map locations from the configuration. */
 
 export const additionalProjectLocations: AdditionalProjectLocation[] =
   projectLocationConfigs.flatMap((config) => {
-    const project = projects.find(
-      (item) => item.id === config.projectId,
-    );
+    const project = projects.find((item) => item.id === config.projectId);
 
     if (!project) return [];
 
@@ -453,9 +455,7 @@ export const additionalProjectLocations: AdditionalProjectLocation[] =
 
 /* Combined collection for map renderers that need every location. */
 
-export type WorldLocation =
-  | PortfolioLocation
-  | AdditionalProjectLocation;
+export type WorldLocation = PortfolioLocation | AdditionalProjectLocation;
 
 export const allWorldLocations: WorldLocation[] = [
   ...locations,

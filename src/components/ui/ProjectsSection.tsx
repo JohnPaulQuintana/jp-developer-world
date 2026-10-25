@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -11,6 +11,7 @@ import {
   Github,
   ImageOff,
   Lightbulb,
+  LoaderCircle,
 } from "lucide-react";
 
 import type { PortfolioProject } from "../../data/locations";
@@ -19,31 +20,86 @@ type ProjectsSectionProps = {
   projects: PortfolioProject[];
 };
 
-function ProjectPreview({
-  image,
-  name,
-}: {
+type ProjectPreviewProps = {
   image: string;
   name: string;
-}) {
+};
+
+function ProjectPreview({ image, name }: ProjectPreviewProps) {
   const [hasError, setHasError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Reset image state whenever the image source changes.
+  useEffect(() => {
+    setHasError(false);
+    setIsLoaded(false);
+  }, [image]);
+
+  const handleImageError = (
+    event: React.SyntheticEvent<HTMLImageElement>,
+  ) => {
+    const img = event.currentTarget;
+
+    console.error("[ProjectsSection] Failed to load project image", {
+      project: name,
+      imageSource: image,
+      resolvedURL: img.src,
+      status: "Image failed to load",
+    });
+
+    setHasError(true);
+    setIsLoaded(false);
+  };
 
   if (!image || hasError) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-[#091b13] text-emerald-400/60">
-        <ImageOff size={26} strokeWidth={1.5} />
+      <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-[#091b13] text-emerald-400/60">
+        <ImageOff size={28} strokeWidth={1.5} />
+
+        <span className="max-w-[85%] break-all text-center text-[10px] text-slate-400">
+          {!image ? "Image path missing" : "Preview unavailable"}
+        </span>
+
+        {!image && (
+          <span className="text-[9px] text-slate-500">
+            {name}
+          </span>
+        )}
       </div>
     );
   }
 
   return (
-    <img
-      src={image}
-      alt={`${name} project preview`}
-      loading="lazy"
-      onError={() => setHasError(true)}
-      className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-    />
+    <div className="relative h-full w-full overflow-hidden bg-[#091b13]">
+      {!isLoaded && (
+        <div className="absolute inset-0 z-[1] flex items-center justify-center text-emerald-400/60">
+          <LoaderCircle
+            size={24}
+            strokeWidth={1.5}
+            className="animate-spin"
+          />
+        </div>
+      )}
+
+      <img
+        key={image}
+        src={image}
+        alt={`${name} project preview`}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => {
+          setIsLoaded(true);
+          console.info(
+            `[ProjectsSection] Image loaded successfully: ${name}`,
+            image,
+          );
+        }}
+        onError={handleImageError}
+        className={`h-full w-full object-cover object-top transition-all duration-500 group-hover:scale-[1.03] ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        }`}
+      />
+    </div>
   );
 }
 
@@ -70,17 +126,20 @@ export default function ProjectsSection({
             key={project.id}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
+            transition={{
+              duration: 0.3,
+              delay: index * 0.05,
+            }}
             className="group relative min-w-0 overflow-hidden rounded-xl border border-emerald-400/20 bg-[#07140e] transition-colors hover:border-emerald-400/40 sm:rounded-2xl"
           >
-            {/* Compact image */}
+            {/* Project image preview */}
             <div className="relative aspect-[16/7] overflow-hidden bg-[#091b13] sm:aspect-[16/9]">
               <ProjectPreview
                 image={project.image}
                 name={project.name}
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07140e]/90 via-transparent to-black/15" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07140e]/90 via-transparent to-black/15" />
 
               <span className="absolute left-2.5 top-2.5 max-w-[65%] truncate rounded-md border border-white/10 bg-black/65 px-2 py-1 text-[9px] font-semibold text-emerald-200 backdrop-blur-sm sm:left-3 sm:top-3 sm:px-2.5 sm:text-[10px]">
                 {project.category}
@@ -91,8 +150,8 @@ export default function ProjectsSection({
               </span>
             </div>
 
+            {/* Project information */}
             <div className="p-3.5 sm:p-5">
-              {/* Title and description */}
               <div className="flex items-start gap-2.5">
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-emerald-400/20 bg-emerald-400/[0.07] text-emerald-400 sm:size-10">
                   <Code2 size={18} />
@@ -126,15 +185,18 @@ export default function ProjectsSection({
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
+                  transition={{ duration: 0.25 }}
                   className="mt-4 space-y-3 overflow-hidden border-t border-white/[0.07] pt-4"
                 >
                   <div className="rounded-lg border border-rose-300/10 bg-rose-400/[0.035] p-3">
                     <div className="mb-1.5 flex items-center gap-2 text-rose-200/90">
                       <BriefcaseBusiness size={14} />
+
                       <h4 className="text-[10px] font-bold uppercase tracking-wider">
                         The problem
                       </h4>
                     </div>
+
                     <p className="text-xs leading-5 text-slate-300/75">
                       {project.businessProblem}
                     </p>
@@ -143,10 +205,12 @@ export default function ProjectsSection({
                   <div className="rounded-lg border border-emerald-300/10 bg-emerald-400/[0.035] p-3">
                     <div className="mb-1.5 flex items-center gap-2 text-emerald-300">
                       <Lightbulb size={14} />
+
                       <h4 className="text-[10px] font-bold uppercase tracking-wider">
                         The solution
                       </h4>
                     </div>
+
                     <p className="text-xs leading-5 text-slate-300/75">
                       {project.solution}
                     </p>
@@ -154,7 +218,7 @@ export default function ProjectsSection({
                 </motion.div>
               )}
 
-              {/* Card controls */}
+              {/* Expand/collapse controls */}
               <div className="mt-3 flex items-center justify-between gap-2 border-t border-white/[0.07] pt-3 sm:mt-4 sm:pt-4">
                 <button
                   type="button"
@@ -163,19 +227,23 @@ export default function ProjectsSection({
                   className="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-1 text-[10px] font-semibold text-slate-400 transition-colors hover:text-emerald-300 sm:text-xs"
                 >
                   <CheckCircle2 size={13} />
+
                   {expanded ? "Less details" : "More details"}
+
                   <ArrowDown
                     size={12}
-                    className={`transition-transform ${expanded ? "rotate-180" : ""}`}
+                    className={`transition-transform duration-200 ${
+                      expanded ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
-                <span className="text-[9px] text-slate-600">
+                <span className="text-[9px] text-slate-500">
                   {project.technologies.length} technologies
                 </span>
               </div>
 
-              {/* Compact action buttons */}
+              {/* Project links */}
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {project.liveUrl ? (
                   <a

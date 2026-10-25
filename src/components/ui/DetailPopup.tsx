@@ -21,8 +21,8 @@ import {
 
 import SkillsSection from "./SkillsSection";
 import ProjectsSection from "./ProjectsSection";
+import ExperienceSection from "./ExperienceSection";
 import type { CityLocation } from "../world/extended/FloatingProjectCity/types";
-
 // const iconMap = {
 //   home: House,
 //   projects: Code2,
@@ -54,13 +54,14 @@ export default function DetailPopup({
   onClose,
   onAskJP,
 }: DetailPopupProps) {
-
-  console.log(locations)
+  console.log(locations);
   const isProjectLocation =
     location.kind === "project" && Boolean(location.projects?.length);
 
   const isSkillsLocation =
     location.id === "skills" && Boolean(location.skills?.length);
+
+  const isExperienceLocation = location.id === "experience";
 
   useEffect(() => {
     if (!visible) return;
@@ -97,7 +98,7 @@ export default function DetailPopup({
             role="dialog"
             aria-modal="true"
             aria-labelledby="detail-popup-title"
-            className="relative ml-auto flex h-[100dvh] w-full max-w-[680px] flex-col overflow-hidden border-l border-emerald-400/20 bg-[#04110d] text-white shadow-[-24px_0_80px_rgba(0,0,0,0.35)]"
+            className="relative ml-auto flex h-[100dvh] w-full max-w-[550px] flex-col overflow-hidden border-l border-emerald-400/20 bg-[#04110d] text-white shadow-[-24px_0_80px_rgba(0,0,0,0.35)]"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -216,7 +217,9 @@ export default function DetailPopup({
                             ? "PROJECT SHOWCASE"
                             : isSkillsLocation
                               ? "TECHNICAL SKILLS"
-                              : "ABOUT THIS SECTION"}
+                              : isExperienceLocation
+                                ? "PROFESSIONAL EXPERIENCE"
+                                : "ABOUT THIS SECTION"}
                         </h3>
 
                         <p className="mt-1 text-xs text-slate-400">
@@ -226,7 +229,9 @@ export default function DetailPopup({
                               : `Explore ${location.projects?.[0]?.name ?? location.shortTitle}`
                             : isSkillsLocation
                               ? "Technologies and development tools"
-                              : "Explore my developer journey"}
+                              : isExperienceLocation
+                                ? "Career history, responsibilities, and professional growth"
+                                : "Explore my developer journey"}
                         </p>
                       </div>
                     </div>
@@ -236,22 +241,13 @@ export default function DetailPopup({
                     <SkillsSection groups={location.skills} />
                   ) : isProjectLocation && location.projects ? (
                     <ProjectsSection projects={location.projects} />
+                  ) : isExperienceLocation ? (
+                    <ExperienceSection />
                   ) : (
                     <div className="border-b border-emerald-300/15 pb-5">
                       <p className="whitespace-pre-line break-words text-sm leading-7 text-slate-200/90 sm:text-base sm:leading-8">
                         {location.detail}
                       </p>
-
-                      {/* <div className="mt-5 flex items-center gap-3 sm:gap-4">
-                        <div className="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-emerald-400 text-emerald-400 sm:size-12">
-                          <Navigation size={22} />
-                        </div>
-
-                        <p className="text-xs leading-6 text-slate-400 sm:text-sm sm:leading-7">
-                          Explore my projects, technical skills, and development
-                          journey.
-                        </p>
-                      </div> */}
                     </div>
                   )}
                 </section>
@@ -297,7 +293,6 @@ export default function DetailPopup({
 
                 {/* Progress */}
                 <div className="px-2 pb-3 pt-1 sm:px-3">
-                  
                   <div className="mt-5 flex items-center justify-center gap-2 pb-1 text-xs text-slate-500">
                     <span className="h-px w-4 bg-emerald-500/60" />
                     <span>Created by</span>
