@@ -137,7 +137,7 @@ export default function DetailPopup({
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-extrabold uppercase tracking-[0.2em] text-emerald-400 sm:text-xs sm:tracking-[0.24em]">
+                <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-emerald-400 sm:text-xs sm:tracking-[0.24em]">
                   JP's Developer Portfolio
                 </p>
 
@@ -184,7 +184,7 @@ export default function DetailPopup({
                       </h3>
                     </div>
 
-                    <p className="max-w-[280px] text-xs leading-5 text-slate-300 sm:text-sm sm:leading-6">
+                    <p className="max-w-[280px] text-sm leading-5 text-slate-300 sm:text-sm sm:leading-6">
                       Turning ideas into practical, reliable, and scalable
                       solutions.
                     </p>
@@ -218,10 +218,10 @@ export default function DetailPopup({
                           </div>
 
                           <div className="min-w-0">
-                            <p className="text-[10px] font-bold leading-4 text-white/90 sm:text-xs">
+                            <p className="text-sm font-bold leading-4 text-white/90 sm:text-xs">
                               {label}
                             </p>
-                            <p className="text-[9px] leading-4 text-white/50 sm:text-xs">
+                            <p className="text-xs leading-4 text-white/50 sm:text-xs">
                               {detail}
                             </p>
                           </div>
