@@ -29,9 +29,10 @@ export default function DevelopmentNote({ onContinue }: DevelopmentNoteProps) {
       transition={{ duration: 0.7 }}
     >
       {/* Cinematic atmosphere */}
+      {/* Background overlay — dims the 3D portfolio world */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_50%,rgba(16,185,129,0.09)_0%,transparent_65%)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-black/60 backdrop-blur-[3px]"
       />
 
       <motion.div
